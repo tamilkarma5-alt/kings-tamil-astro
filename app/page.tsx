@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-// @ts-expect-error qrcode package has no bundled TypeScript declaration
+// @ts-ignore
 import QRCode from "qrcode";
 import { jsPDF } from "jspdf";
 type Form = {
