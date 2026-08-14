@@ -15,10 +15,11 @@
     "jspdf": "^4.0.0",
     "qrcode": "^1.5.4"
   },
-  "devDependencies": {
-    "@types/node": "^22.0.0",
-    "@types/react": "^19.0.0",
-    "@types/react-dom": "^19.0.0",
-    "typescript": "^5.0.0"
-  }
+ "devDependencies": {
+  "@types/node": "^22.0.0",
+  "@types/react": "^19.0.0",
+  "@types/react-dom": "^19.0.0",
+  "@types/qrcode": "^1.5.5",
+  "typescript": "^5.0.0"
+}
 }
