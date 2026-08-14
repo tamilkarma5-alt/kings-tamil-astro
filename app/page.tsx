@@ -1,8 +1,6 @@
 "use client";
 
 import { useMemo, useState } from "react";
-// @ts-ignore
-import QRCode from "qrcode";
 import { jsPDF } from "jspdf";
 type Form = {
   name: string;
@@ -57,7 +55,6 @@ export default function Home() {
     if (!report) return;
     setBusy(true);
     try {
-      const qr = await QRCode.toDataURL(siteUrl, { width: 220, margin: 1 });
       const pdf = new jsPDF({ unit: "mm", format: "a4" });
 
       pdf.setFont("helvetica", "bold");
@@ -103,7 +100,6 @@ export default function Home() {
         "அடிப்படையாகக் கொண்ட கணக்கீட்டு engine மூலம் நிரப்பப்பட வேண்டும்.";
       pdf.text(pdf.splitTextToSize(tamilNote, 165), 22, y + 40);
 
-      pdf.addImage(qr, "PNG", 154, 228, 30, 30);
       pdf.setFontSize(8);
       pdf.text(`Report ID: ${report.id}`, 20, 246);
       pdf.text(`Generated: ${report.generated}`, 20, 252);
