@@ -12,3 +12,10 @@ Built around the supplied Astro Vision Tamil Jathagam reference:
 - browser Print / Save as PDF
 
 Astrology calculation uses Astronomy Engine (MIT) for astronomical positions; sidereal conversion and traditional chart calculations are implemented in `lib/astro.ts`.
+
+## V2 header/shop changes
+- Header follows the supplied reference palette/layout.
+- Left/right devotional line-art: Murugan and Vinayagar.
+- Main report title is `ஒரு பக்க ஜாதகம்`.
+- Optional bold headline and optional shop name/place/contact are printed when supplied.
+- QR/scan block removed.
