@@ -82,7 +82,10 @@ function rasiFromLongitude(
 
 function nakshatraFromLongitude(
   longitude: number
-) {
+): {
+  name: string;
+  pada: number;
+} {
   const value = normalize(longitude);
 
   const nakshatraSize = 360 / 27;
@@ -107,9 +110,6 @@ function nakshatraFromLongitude(
   };
 }
 
-/*
-  Approximate Lahiri ayanamsa.
-*/
 function lahiriAyanamsa(
   date: Date
 ): number {
@@ -163,28 +163,21 @@ function makePlanet(
 }
 
 /*
-  Astronomy Engine requires a Body,
-  observer and date for GeoVector.
-
-  We use geocentric coordinates by
-  observing from the Earth's centre.
-*/
+ * Astronomy Engine GeoVector:
+ *
+ * GeoVector(body, date, aberration)
+ *
+ * The third argument is boolean.
+ */
 function planetLongitude(
   body: Astronomy.Body,
   date: Date
 ): number {
-  const observer =
-    new Astronomy.Observer(
-      0,
-      0,
-      0
-    );
-
   const vector =
     Astronomy.GeoVector(
       body,
       date,
-      observer
+      true
     );
 
   const ecliptic =
@@ -198,18 +191,11 @@ function planetLongitude(
 function moonLongitude(
   date: Date
 ): number {
-  const observer =
-    new Astronomy.Observer(
-      0,
-      0,
-      0
-    );
-
   const vector =
     Astronomy.GeoVector(
       Astronomy.Body.Moon,
       date,
-      observer
+      true
     );
 
   const ecliptic =
@@ -223,18 +209,11 @@ function moonLongitude(
 function sunLongitude(
   date: Date
 ): number {
-  const observer =
-    new Astronomy.Observer(
-      0,
-      0,
-      0
-    );
-
   const vector =
     Astronomy.GeoVector(
       Astronomy.Body.Sun,
       date,
-      observer
+      true
     );
 
   const ecliptic =
@@ -446,26 +425,32 @@ export function calculateBirthChart(
         "சூரியன்",
         sun
       ),
+
       makePlanet(
         "சந்திரன்",
         moon
       ),
+
       makePlanet(
         "செவ்வாய்",
         mars
       ),
+
       makePlanet(
         "புதன்",
         mercury
       ),
+
       makePlanet(
         "குரு",
         jupiter
       ),
+
       makePlanet(
         "சுக்கிரன்",
         venus
       ),
+
       makePlanet(
         "சனி",
         saturn
