@@ -1,21 +1,23 @@
-# Kings Tamil Astro — Final V1
+# Kings Tamil Astro — Blue/White Program
 
-Built around the supplied Astro Vision Tamil Jathagam reference:
-- one-page A4 report
-- South Indian 4x4 chart with empty 2x2 centre
-- South Indian Navamsa chart
-- optional father/mother fields
-- automatic place geocoding through Nominatim
-- sidereal/Lahiri-style calculation
-- planetary positions, rasi, nakshatra, pada, tithi, yoga, karana
-- Vimshottari dasha balance
-- browser Print / Save as PDF
+This is the actual Next.js program. No AI-generated deity images are used.
 
-Astrology calculation uses Astronomy Engine (MIT) for astronomical positions; sidereal conversion and traditional chart calculations are implemented in `lib/astro.ts`.
+The header loads existing Wikimedia Commons images:
+- Murugan: Lord Muruga.jpg — public domain.
+- Ganesha: Ganesha picture.jpg — CC0.
 
-## V2 header/shop changes
-- Header follows the supplied reference palette/layout.
-- Left/right devotional line-art: Murugan and Vinayagar.
-- Main report title is `ஒரு பக்க ஜாதகம்`.
-- Optional bold headline and optional shop name/place/contact are printed when supplied.
-- QR/scan block removed.
+You can later replace the two URL constants in `app/page.tsx` with local files:
+`/murugan.jpg` and `/vinayagar.jpg`.
+
+The current build has:
+- A4 one-page print layout
+- White + blue palette
+- Real image elements instead of drawn/SVG deity icons
+- Optional father/mother names
+- Optional bold headline
+- Optional one-line sentence
+- Optional shop name/place/contact
+- No QR code
+- No `qrcode` package
+
+Important: the sample planet values are intentionally placeholders. The astronomy calculation engine still needs to be connected before this should be treated as a real astrology calculation product.

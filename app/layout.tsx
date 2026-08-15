@@ -1,11 +1,15 @@
-import type { Metadata } from "next";
 import "./globals.css";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Kings Tamil Astro",
-  description: "South Indian Tamil Jathagam Generator",
+  description: "ஒரு பக்க ஜாதகம்"
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return <html lang="ta"><body>{children}</body></html>;
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  return (
+    <html lang="ta">
+      <body>{children}</body>
+    </html>
+  );
 }
