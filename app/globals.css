@@ -1,7 +1,4 @@
-@page {
-  size: A4 portrait;
-  margin: 0;
-}
+@page { size: A4 portrait; margin: 0; }
 
 :root {
   --blue: #075b9d;
@@ -9,15 +6,11 @@
   --blue-light: #edf6fd;
   --line: #9abbd7;
   --text: #173a58;
-  --white: #ffffff;
 }
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
-html,
-body {
+html, body {
   margin: 0;
   padding: 0;
   background: #edf5fb;
@@ -25,12 +18,10 @@ body {
   font-family: "Noto Serif Tamil", "Latha", Georgia, serif;
 }
 
-/* ---------- FORM ---------- */
-
 .editor {
   width: min(1050px, calc(100% - 30px));
   margin: 25px auto;
-  background: white;
+  background: #fff;
   border: 1px solid #c5d9ea;
   border-radius: 14px;
   padding: 28px;
@@ -51,22 +42,9 @@ body {
   color: var(--blue);
 }
 
-.editorHeader h1 {
-  color: var(--blue-dark);
-  margin: 7px 0 2px;
-  font-size: 32px;
-}
-
-.editorHeader p {
-  margin: 0;
-  color: #6b879e;
-}
-
-.editor h2 {
-  color: var(--blue-dark);
-  font-size: 18px;
-  margin: 20px 0 10px;
-}
+.editorHeader h1 { color: var(--blue-dark); margin: 7px 0 2px; font-size: 32px; }
+.editorHeader p { margin: 0; color: #6b879e; }
+.editor h2 { color: var(--blue-dark); font-size: 18px; margin: 20px 0 10px; }
 
 .formGrid {
   display: grid;
@@ -74,71 +52,42 @@ body {
   gap: 12px;
 }
 
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
+.field { display: flex; flex-direction: column; gap: 5px; }
+.field span { font-weight: 700; font-size: 14px; }
 
-.field span {
-  font-weight: 700;
-  font-size: 14px;
-}
-
-.field input,
-.field select {
+.field input, .field select {
   height: 42px;
   border: 1px solid #b7cfe3;
   border-radius: 8px;
   padding: 0 10px;
-  background: white;
+  background: #fff;
   color: var(--text);
 }
 
-details {
-  margin-top: 15px;
-  border-top: 1px solid #d5e3ef;
-  padding-top: 10px;
-}
+details { margin-top: 15px; border-top: 1px solid #d5e3ef; padding-top: 10px; }
+summary { cursor: pointer; color: var(--blue-dark); font-weight: 700; }
+details .formGrid { margin-top: 12px; }
 
-summary {
-  cursor: pointer;
-  color: var(--blue-dark);
-  font-weight: 700;
-}
-
-details .formGrid {
-  margin-top: 12px;
-}
-
-.generateButton,
-.printButtons button {
+.generateButton, .printButtons button {
   background: var(--blue);
-  color: white;
+  color: #fff;
   border: 0;
   border-radius: 7px;
   padding: 12px 20px;
   font-weight: 700;
   cursor: pointer;
 }
-
-.generateButton {
-  margin-top: 22px;
-}
-
-/* ---------- A4 ---------- */
+.generateButton { margin-top: 22px; }
 
 .a4 {
   width: 210mm;
   height: 297mm;
   margin: 22px auto;
   padding: 7mm 10mm 5mm;
-  background: white;
-  box-shadow: 0 0 18px rgba(30, 70, 100, 0.18);
+  background: #fff;
+  box-shadow: 0 0 18px rgba(30, 70, 100, .18);
   overflow: hidden;
 }
-
-/* ---------- HEADER ---------- */
 
 .reportHeader {
   display: grid;
@@ -147,10 +96,7 @@ details .formGrid {
   gap: 12px;
 }
 
-.deity {
-  text-align: center;
-}
-
+.deity { text-align: center; }
 .deityImage {
   width: 58px;
   height: 58px;
@@ -158,30 +104,12 @@ details .formGrid {
   overflow: hidden;
   margin: auto;
   border: 2px solid var(--blue);
-  background: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background: #fff;
 }
+.deityImage img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.deity small { display: block; color: var(--blue-dark); font-size: 8px; margin-top: 3px; }
 
-.deityImage img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.deity small {
-  display: block;
-  color: var(--blue-dark);
-  font-size: 8px;
-  margin-top: 3px;
-}
-
-.titleArea {
-  text-align: center;
-}
-
+.titleArea { text-align: center; }
 .company {
   font-family: Arial, sans-serif;
   font-size: 8px;
@@ -189,45 +117,12 @@ details .formGrid {
   letter-spacing: 2px;
   color: var(--blue);
 }
-
-.titleArea h1 {
-  margin: 3px 0;
-  font-size: 27px;
-  color: var(--blue-dark);
-}
-
-.titleEnglish {
-  font-family: Arial, sans-serif;
-  font-size: 9px;
-  font-weight: 700;
-  color: var(--blue);
-}
-
-.titleArea p {
-  font-size: 8px;
-  color: #66829b;
-  margin: 3px 0;
-}
-
-.headline {
-  display: block;
-  color: var(--blue-dark);
-  font-size: 13px;
-  margin-top: 4px;
-}
-
-.sentence {
-  color: #426b8d;
-  font-size: 8px;
-  margin-top: 3px;
-}
-
-.blueRule {
-  border-top: 2px solid var(--blue);
-  margin: 5px 0 7px;
-}
-
-/* ---------- DETAILS ---------- */
+.titleArea h1 { margin: 3px 0; font-size: 27px; color: var(--blue-dark); }
+.titleEnglish { font-family: Arial, sans-serif; font-size: 9px; font-weight: 700; color: var(--blue); }
+.titleArea p { font-size: 8px; color: #66829b; margin: 3px 0; }
+.headline { display: block; color: var(--blue-dark); font-size: 13px; margin-top: 4px; }
+.sentence { color: #426b8d; font-size: 8px; margin-top: 3px; }
+.blueRule { border-top: 2px solid var(--blue); margin: 5px 0 7px; }
 
 .detailsGrid {
   display: grid;
@@ -239,23 +134,10 @@ details .formGrid {
   border: 1px solid var(--line);
   min-height: 32px;
   padding: 4px 6px;
-  background: white;
+  background: #fff;
 }
-
-.infoBox small {
-  display: block;
-  font-size: 7px;
-  color: #65819a;
-}
-
-.infoBox b {
-  display: block;
-  font-family: Arial, sans-serif;
-  font-size: 9px;
-  margin-top: 2px;
-}
-
-/* ---------- ASTROLOGY ---------- */
+.infoBox small { display: block; font-size: 7px; color: #65819a; }
+.infoBox b { display: block; font-family: Arial, sans-serif; font-size: 9px; margin-top: 2px; }
 
 .astrologyGrid {
   display: grid;
@@ -264,12 +146,7 @@ details .formGrid {
   margin-top: 6px;
 }
 
-.panel {
-  border: 1px solid var(--line);
-  padding: 5px;
-  min-height: 105px;
-}
-
+.panel { border: 1px solid var(--line); padding: 5px; min-height: 105px; }
 .panel h2 {
   color: var(--blue-dark);
   font-size: 12px;
@@ -278,24 +155,9 @@ details .formGrid {
   border-bottom: 1px solid var(--line);
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 7.5px;
-}
-
-th,
-td {
-  border: 1px solid var(--line);
-  padding: 3px;
-}
-
-th {
-  background: var(--blue-light);
-  color: var(--blue-dark);
-}
-
-/* ---------- SOUTH INDIAN CHART ---------- */
+table { width: 100%; border-collapse: collapse; font-size: 7.5px; }
+th, td { border: 1px solid var(--line); padding: 3px; }
+th { background: var(--blue-light); color: var(--blue-dark); }
 
 .southChart {
   position: relative;
@@ -305,7 +167,6 @@ th {
   aspect-ratio: 1;
   border: 1px solid var(--line);
 }
-
 .southChart > div {
   border: 1px solid var(--line);
   min-height: 25px;
@@ -313,7 +174,6 @@ th {
   font-size: 7px;
   text-align: center;
 }
-
 .southChart strong {
   position: absolute;
   left: 25%;
@@ -323,13 +183,11 @@ th {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: white;
+  background: #fff;
   border: 1px solid var(--line);
   color: var(--blue-dark);
   font-size: 10px;
 }
-
-/* ---------- DASA ---------- */
 
 .dasa div {
   display: flex;
@@ -338,12 +196,7 @@ th {
   padding: 6px 2px;
   font-size: 8px;
 }
-
-.dasa b {
-  color: var(--blue-dark);
-}
-
-/* ---------- SHOP ---------- */
+.dasa b { color: var(--blue-dark); }
 
 .shopFooter {
   margin-top: 6px;
@@ -357,8 +210,6 @@ th {
   font-size: 8px;
   color: var(--blue-dark);
 }
-
-/* ---------- FOOTER ---------- */
 
 .reportFooter {
   display: flex;
@@ -379,17 +230,9 @@ th {
   justify-content: center;
 }
 
-/* ---------- PRINT ---------- */
-
 @media print {
-  body {
-    background: white;
-  }
-
-  .no-print {
-    display: none !important;
-  }
-
+  body { background: #fff; }
+  .no-print { display: none !important; }
   .a4 {
     width: 210mm;
     height: 297mm;
@@ -400,14 +243,6 @@ th {
 }
 
 @media (max-width: 800px) {
-  .formGrid {
-    grid-template-columns: 1fr;
-  }
-
-  .a4 {
-    width: 100%;
-    height: auto;
-    min-height: 297mm;
-    margin: 0;
-  }
+  .formGrid { grid-template-columns: 1fr; }
+  .a4 { width: 100%; height: auto; min-height: 297mm; margin: 0; }
 }

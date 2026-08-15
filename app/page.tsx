@@ -1,6 +1,7 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import type { FormEvent, ReactNode } from "react";
+import { useState } from "react";
 
 type FormData = {
   name: string;
@@ -46,7 +47,7 @@ export default function Home() {
     setForm((old) => ({ ...old, [key]: value }));
   };
 
-  function generate(e: FormEvent) {
+  function generate(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     if (!form.name || !form.dob || !form.time || !form.place) {
@@ -55,11 +56,8 @@ export default function Home() {
     }
 
     setShowReport(true);
-
     setTimeout(() => {
-      document
-        .getElementById("jathagam")
-        ?.scrollIntoView({ behavior: "smooth" });
+      document.getElementById("jathagam")?.scrollIntoView({ behavior: "smooth" });
     }, 100);
   }
 
@@ -77,40 +75,18 @@ export default function Home() {
             <h2>பிறப்பு விவரங்கள்</h2>
 
             <div className="formGrid">
-              <Field
-                label="பெயர்"
-                value={form.name}
-                placeholder="உதா: KESAVAN"
-                onChange={(v) => update("name", v)}
-              />
-
-              <Field
-                label="பிறந்த தேதி"
-                type="date"
-                value={form.dob}
-                onChange={(v) => update("dob", v)}
-              />
-
-              <Field
-                label="பிறந்த நேரம்"
-                type="time"
-                value={form.time}
-                onChange={(v) => update("time", v)}
-              />
-
-              <Field
-                label="பிறந்த இடம்"
-                value={form.place}
-                placeholder="உதா: NAMAKKAL"
-                onChange={(v) => update("place", v)}
-              />
+              <Field label="பெயர்" value={form.name} placeholder="உதா: KESAVAN"
+                onChange={(v) => update("name", v)} />
+              <Field label="பிறந்த தேதி" type="date" value={form.dob}
+                onChange={(v) => update("dob", v)} />
+              <Field label="பிறந்த நேரம்" type="time" value={form.time}
+                onChange={(v) => update("time", v)} />
+              <Field label="பிறந்த இடம்" value={form.place} placeholder="உதா: NAMAKKAL"
+                onChange={(v) => update("place", v)} />
 
               <label className="field">
                 <span>பாலினம்</span>
-                <select
-                  value={form.gender}
-                  onChange={(e) => update("gender", e.target.value)}
-                >
+                <select value={form.gender} onChange={(e) => update("gender", e.target.value)}>
                   <option>ஆண்</option>
                   <option>பெண்</option>
                 </select>
@@ -119,63 +95,33 @@ export default function Home() {
 
             <details>
               <summary>தனிப்பட்ட விவரங்கள் — Optional</summary>
-
               <div className="formGrid">
-                <Field
-                  label="தந்தை பெயர்"
-                  value={form.father}
-                  onChange={(v) => update("father", v)}
-                />
-
-                <Field
-                  label="தாய் பெயர்"
-                  value={form.mother}
-                  onChange={(v) => update("mother", v)}
-                />
-
-                <Field
-                  label="Bold Headline"
-                  value={form.headline}
+                <Field label="தந்தை பெயர்" value={form.father}
+                  onChange={(v) => update("father", v)} />
+                <Field label="தாய் பெயர்" value={form.mother}
+                  onChange={(v) => update("mother", v)} />
+                <Field label="Bold Headline" value={form.headline}
                   placeholder="உதா: சிறப்பான எதிர்காலம்"
-                  onChange={(v) => update("headline", v)}
-                />
-
-                <Field
-                  label="ஒரு வரி வாசகம்"
-                  value={form.sentence}
+                  onChange={(v) => update("headline", v)} />
+                <Field label="ஒரு வரி வாசகம்" value={form.sentence}
                   placeholder="உங்கள் விருப்ப வாசகம்..."
-                  onChange={(v) => update("sentence", v)}
-                />
+                  onChange={(v) => update("sentence", v)} />
               </div>
             </details>
 
             <details>
               <summary>கடை / Shop விவரங்கள் — Optional</summary>
-
               <div className="formGrid">
-                <Field
-                  label="Shop Name"
-                  value={form.shopName}
-                  onChange={(v) => update("shopName", v)}
-                />
-
-                <Field
-                  label="Shop Place"
-                  value={form.shopPlace}
-                  onChange={(v) => update("shopPlace", v)}
-                />
-
-                <Field
-                  label="Shop Contact"
-                  value={form.shopContact}
-                  onChange={(v) => update("shopContact", v)}
-                />
+                <Field label="Shop Name" value={form.shopName}
+                  onChange={(v) => update("shopName", v)} />
+                <Field label="Shop Place" value={form.shopPlace}
+                  onChange={(v) => update("shopPlace", v)} />
+                <Field label="Shop Contact" value={form.shopContact}
+                  onChange={(v) => update("shopContact", v)} />
               </div>
             </details>
 
-            <button className="generateButton" type="submit">
-              ஜாதகம் உருவாக்கு
-            </button>
+            <button className="generateButton" type="submit">ஜாதகம் உருவாக்கு</button>
           </form>
         </section>
       )}
@@ -187,31 +133,13 @@ export default function Home() {
               <Deity image={MURUGAN} label="ஸ்ரீ முருகன்" />
 
               <div className="titleArea">
-                <div className="company">
-                  ஜென்ம ஜாதகம் • KINGS TECHNOLOGY
-                </div>
-
+                <div className="company">ஜென்ம ஜாதகம் • KINGS TECHNOLOGY</div>
                 <h1>ஒரு பக்க ஜாதகம்</h1>
+                <div className="titleEnglish">Kings Tamil Astro</div>
+                <p>பிறப்பு விவரங்களின் அடிப்படையில் உருவாக்கப்பட்ட ஜாதக அறிக்கை</p>
 
-                <div className="titleEnglish">
-                  Kings Tamil Astro
-                </div>
-
-                <p>
-                  பிறப்பு விவரங்களின் அடிப்படையில் உருவாக்கப்பட்ட ஜாதக அறிக்கை
-                </p>
-
-                {form.headline && (
-                  <strong className="headline">
-                    {form.headline}
-                  </strong>
-                )}
-
-                {form.sentence && (
-                  <div className="sentence">
-                    {form.sentence}
-                  </div>
-                )}
+                {form.headline && <strong className="headline">{form.headline}</strong>}
+                {form.sentence && <div className="sentence">{form.sentence}</div>}
               </div>
 
               <Deity image={VINAYAGAR} label="ஸ்ரீ விநாயகர்" />
@@ -225,18 +153,12 @@ export default function Home() {
               <Info label="பிறந்த நேரம்" value={form.time} />
               <Info label="பிறந்த இடம்" value={form.place} />
               <Info label="பாலினம்" value={form.gender} />
-
-              {form.father && (
-                <Info label="தந்தை பெயர்" value={form.father} />
-              )}
-
-              {form.mother && (
-                <Info label="தாய் பெயர்" value={form.mother} />
-              )}
+              {form.father && <Info label="தந்தை பெயர்" value={form.father} />}
+              {form.mother && <Info label="தாய் பெயர்" value={form.mother} />}
             </section>
 
             <section className="astrologyGrid">
-              <Panel title="கிரக நிலைகள்">
+              <Panel title="துல்லியமான நிராயண கிரக நிலைகள்">
                 <table>
                   <thead>
                     <tr>
@@ -246,24 +168,10 @@ export default function Home() {
                       <th>பாதம்</th>
                     </tr>
                   </thead>
-
                   <tbody>
-                    {[
-                      "சூரியன்",
-                      "சந்திரன்",
-                      "செவ்வாய்",
-                      "புதன்",
-                      "குரு",
-                      "சுக்கிரன்",
-                      "சனி",
-                      "ராகு",
-                      "கேது",
-                    ].map((planet) => (
+                    {["சூரியன்","சந்திரன்","செவ்வாய்","புதன்","குரு","சுக்கிரன்","சனி","ராகு","கேது"].map((planet) => (
                       <tr key={planet}>
-                        <td>{planet}</td>
-                        <td>—</td>
-                        <td>—</td>
-                        <td>—</td>
+                        <td>{planet}</td><td>—</td><td>—</td><td>—</td>
                       </tr>
                     ))}
                   </tbody>
@@ -280,27 +188,14 @@ export default function Home() {
 
               <Panel title="தசா இருப்பு">
                 <div className="dasa">
-                  <div>
-                    <span>தற்போதைய தசா</span>
-                    <b>—</b>
-                  </div>
-
-                  <div>
-                    <span>மீதம்</span>
-                    <b>—</b>
-                  </div>
-
-                  <div>
-                    <span>அடுத்த தசா</span>
-                    <b>—</b>
-                  </div>
+                  <div><span>தற்போதைய தசா</span><b>—</b></div>
+                  <div><span>மீதம்</span><b>—</b></div>
+                  <div><span>அடுத்த தசா</span><b>—</b></div>
                 </div>
               </Panel>
             </section>
 
-            {(form.shopName ||
-              form.shopPlace ||
-              form.shopContact) && (
+            {(form.shopName || form.shopPlace || form.shopContact) && (
               <footer className="shopFooter">
                 {form.shopName && <b>{form.shopName}</b>}
                 {form.shopPlace && <span>{form.shopPlace}</span>}
@@ -309,24 +204,15 @@ export default function Home() {
             )}
 
             <footer className="reportFooter">
-              <span>
-                Generated: {new Date().toLocaleDateString("en-GB")}
-              </span>
-
+              <span>Generated: {new Date().toLocaleDateString("en-GB")}</span>
               <b>KINGS TECHNOLOGY</b>
-
               <span>ஒரு பக்க ஜாதகம்</span>
             </footer>
           </section>
 
           <div className="printButtons no-print">
-            <button onClick={() => window.print()}>
-              Print / Save as PDF
-            </button>
-
-            <button onClick={() => setShowReport(false)}>
-              ← Edit Details
-            </button>
+            <button onClick={() => window.print()}>Print / Save as PDF</button>
+            <button onClick={() => setShowReport(false)}>← Edit Details</button>
           </div>
         </>
       )}
@@ -335,57 +221,32 @@ export default function Home() {
 }
 
 function Field({
-  label,
-  value,
-  onChange,
-  placeholder,
-  type = "text",
+  label, value, onChange, placeholder, type = "text",
 }: {
-  label: string;
-  value: string;
-  onChange: (value: string) => void;
-  placeholder?: string;
-  type?: string;
+  label: string; value: string; onChange: (value: string) => void;
+  placeholder?: string; type?: string;
 }) {
   return (
     <label className="field">
       <span>{label}</span>
-
-      <input
-        type={type}
-        value={value}
-        placeholder={placeholder}
-        onChange={(e) => onChange(e.target.value)}
-      />
+      <input type={type} value={value} placeholder={placeholder}
+        onChange={(e) => onChange(e.target.value)} />
     </label>
   );
 }
 
-function Deity({
-  image,
-  label,
-}: {
-  image: string;
-  label: string;
-}) {
+function Deity({ image, label }: { image: string; label: string }) {
   return (
     <div className="deity">
       <div className="deityImage">
         <img src={image} alt={label} />
       </div>
-
       <small>{label}</small>
     </div>
   );
 }
 
-function Info({
-  label,
-  value,
-}: {
-  label: string;
-  value: string;
-}) {
+function Info({ label, value }: { label: string; value: string }) {
   return (
     <div className="infoBox">
       <small>{label}</small>
@@ -394,13 +255,7 @@ function Info({
   );
 }
 
-function Panel({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
+function Panel({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section className="panel">
       <h2>{title}</h2>
@@ -411,30 +266,15 @@ function Panel({
 
 function SouthIndianChart() {
   const cells = [
-    "மேஷம்",
-    "ரிஷபம்",
-    "மிதுனம்",
-    "கடகம்",
-    "மீனம்",
-    "",
-    "",
-    "சிம்மம்",
-    "கும்பம்",
-    "",
-    "",
-    "கன்னி",
-    "மகரம்",
-    "தனுசு",
-    "விருச்சிகம்",
-    "துலாம்",
+    "மேஷம்","ரிஷபம்","மிதுனம்","கடகம்",
+    "மீனம்","","","சிம்மம்",
+    "கும்பம்","","","கன்னி",
+    "மகரம்","தனுசு","விருச்சிகம்","துலாம்",
   ];
 
   return (
     <div className="southChart">
-      {cells.map((cell, index) => (
-        <div key={index}>{cell}</div>
-      ))}
-
+      {cells.map((cell, index) => <div key={index}>{cell}</div>)}
       <strong>ராசி</strong>
     </div>
   );
