@@ -14,26 +14,16 @@ const chartCells=[
   {r:4,c:1,s:8},{r:4,c:2,s:7},{r:4,c:3,s:6},{r:4,c:4,s:5},
 ];
 
-function MuruganIcon(){
- return <svg className="deityIcon" viewBox="0 0 90 90" aria-label="Murugan">
-  <circle cx="45" cy="45" r="38" fill="#f7eee2" stroke="#9a7957" strokeWidth="1.5"/>
-  <path d="M45 15v48M36 25l9-10 9 10M28 48c8-5 26-5 34 0M32 57c8 6 18 6 26 0M25 68c12-9 28-9 40 0" fill="none" stroke="#5a3821" strokeWidth="2.5" strokeLinecap="round"/>
-  <path d="M21 37l7-8 2 13M69 37l-7-8-2 13" fill="none" stroke="#5a3821" strokeWidth="2"/>
-  <path d="M69 18l-5 22 5-6 5 6z" fill="none" stroke="#9a7957" strokeWidth="2"/>
-  <circle cx="38" cy="38" r="1.8" fill="#5a3821"/><circle cx="52" cy="38" r="1.8" fill="#5a3821"/>
-  <path d="M39 47q6 5 12 0" fill="none" stroke="#5a3821" strokeWidth="1.8"/>
- </svg>
-}
+const MURUGAN_IMAGE = "https://commons.wikimedia.org/wiki/Special:Redirect/file/20190821_Lord_Murugan_statue-2.jpg";
+const VINAYAGAR_IMAGE = "https://commons.wikimedia.org/wiki/Special:Redirect/file/Ganesha_picture.jpg";
 
-function VinayagarIcon(){
- return <svg className="deityIcon" viewBox="0 0 90 90" aria-label="Vinayagar">
-  <circle cx="45" cy="45" r="38" fill="#f7eee2" stroke="#9a7957" strokeWidth="1.5"/>
-  <path d="M30 38q-9-13-14 0 8 2 14 10M60 38q9-13 14 0-8 2-14 10" fill="none" stroke="#5a3821" strokeWidth="3" strokeLinecap="round"/>
-  <path d="M45 25q-15 0-17 16 0 18 17 24 17-6 17-24-2-16-17-16z" fill="none" stroke="#5a3821" strokeWidth="2.5"/>
-  <path d="M45 43c-3 7-5 14 2 17 7 2 10-4 5-9-3-3-4-6-3-10" fill="none" stroke="#5a3821" strokeWidth="3" strokeLinecap="round"/>
-  <circle cx="38" cy="39" r="2" fill="#5a3821"/><circle cx="52" cy="39" r="2" fill="#5a3821"/>
-  <path d="M36 31q9-7 18 0" fill="none" stroke="#9a7957" strokeWidth="2"/>
- </svg>
+function DeityImage({src,label}:{src:string;label:string}){
+ return <div className="deitySide">
+   <div className="deityPhotoWrap">
+     <img className="deityPhoto" src={src} alt={label} />
+   </div>
+   <small>{label}</small>
+ </div>
 }
 
 function Chart({data,title,navamsa=false}:{data:ChartData;title:string;navamsa?:boolean}){
@@ -106,14 +96,14 @@ export default function Home(){
 
   {data&&<section className="paper" id="report">
    <header className="reportHead">
-     <div className="deitySide"><MuruganIcon/><small>ஸ்ரீ முருகன்</small></div>
+     <DeityImage src={MURUGAN_IMAGE} label="ஸ்ரீ முருகன்" />
      <div className="headTitle">
        <div className="software">ஜென்ம ஜாதகம் • KINGS TECHNOLOGY</div>
        <h1>ஒரு பக்க ஜாதகம்</h1>
        {f.headline&&<strong className="headline">{f.headline}</strong>}
        <p>பிறப்பு விவரங்களின் அடிப்படையில் உருவாக்கப்பட்ட ஜாதக அறிக்கை</p>
      </div>
-     <div className="deitySide"><VinayagarIcon/><small>ஸ்ரீ விநாயகர்</small></div>
+     <DeityImage src={VINAYAGAR_IMAGE} label="ஸ்ரீ விநாயகர்" />
    </header>
 
    <section className="infoGrid">

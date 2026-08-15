@@ -1,21 +1,20 @@
-# Kings Tamil Astro — Final V1
+# Kings Tamil Astro
 
-Built around the supplied Astro Vision Tamil Jathagam reference:
-- one-page A4 report
-- South Indian 4x4 chart with empty 2x2 centre
-- South Indian Navamsa chart
-- optional father/mother fields
-- automatic place geocoding through Nominatim
-- sidereal/Lahiri-style calculation
-- planetary positions, rasi, nakshatra, pada, tithi, yoga, karana
-- Vimshottari dasha balance
-- browser Print / Save as PDF
+Professional one-page A4 South Indian Tamil Jathagam web app.
 
-Astrology calculation uses Astronomy Engine (MIT) for astronomical positions; sidereal conversion and traditional chart calculations are implemented in `lib/astro.ts`.
+## Included modifications
+- White + blue professional colour palette.
+- Real Murugan and Vinayagar photographs in the report header.
+- No QR code.
+- A4 one-page print layout.
+- Optional father/mother fields.
+- Optional one-line headline.
+- Optional shop name/place/contact section.
+- Existing `lib/astro.ts` calculation logic preserved.
 
-## V2 header/shop changes
-- Header follows the supplied reference palette/layout.
-- Left/right devotional line-art: Murugan and Vinayagar.
-- Main report title is `ஒரு பக்க ஜாதகம்`.
-- Optional bold headline and optional shop name/place/contact are printed when supplied.
-- QR/scan block removed.
+## Deity image sources
+The header uses CC0/public-domain images hosted by Wikimedia Commons:
+- Murugan: `20190821 Lord Murugan statue-2.jpg` — CC0.
+- Vinayagar: `Ganesha picture.jpg` — CC0.
+
+The images are referenced directly in `app/page.tsx` so no image-generation package is used.
