@@ -68,6 +68,10 @@ const rasis = [
   "மீனம்",
 ];
 
+function getRasiIndex(rasi: string): number {
+  return rasis.indexOf(rasi);
+}
+
 export default function Home() {
   const [form, setForm] = useState<FormData>(emptyForm);
   const [chart, setChart] = useState<BirthChart | null>(null);
@@ -179,15 +183,9 @@ export default function Home() {
   function formatDegree(value: number) {
     const degree = value % 30;
     const deg = Math.floor(degree);
-    const minutes = Math.floor(
-      (degree - deg) * 60
-    );
+    const minutes = Math.floor((degree - deg) * 60);
 
     return `${deg}° ${minutes}'`;
-  }
-
-  function getRasiIndex(rasi: string) {
-    return rasis.indexOf(rasi);
   }
 
   return (
@@ -214,36 +212,28 @@ export default function Home() {
                 label="பெயர்"
                 value={form.name}
                 placeholder="உதா: KESAVAN"
-                onChange={(v) =>
-                  update("name", v)
-                }
+                onChange={(v) => update("name", v)}
               />
 
               <Field
                 label="பிறந்த தேதி"
                 type="date"
                 value={form.dob}
-                onChange={(v) =>
-                  update("dob", v)
-                }
+                onChange={(v) => update("dob", v)}
               />
 
               <Field
                 label="பிறந்த நேரம்"
                 type="time"
                 value={form.time}
-                onChange={(v) =>
-                  update("time", v)
-                }
+                onChange={(v) => update("time", v)}
               />
 
               <Field
                 label="பிறந்த இடம்"
                 value={form.place}
                 placeholder="உதா: NAMAKKAL"
-                onChange={(v) =>
-                  update("place", v)
-                }
+                onChange={(v) => update("place", v)}
               />
 
               <label className="field">
@@ -252,10 +242,7 @@ export default function Home() {
                 <select
                   value={form.gender}
                   onChange={(e) =>
-                    update(
-                      "gender",
-                      e.target.value
-                    )
+                    update("gender", e.target.value)
                   }
                 >
                   <option>ஆண்</option>
@@ -270,8 +257,8 @@ export default function Home() {
               </summary>
 
               <div className="locationHelp">
-                பிறந்த இடத்தின் Latitude மற்றும்
-                Longitude கொடுக்கவும்.
+                பிறந்த இடத்தின் Latitude மற்றும் Longitude
+                கொடுக்கவும்.
               </div>
 
               <div className="formGrid">
@@ -363,10 +350,7 @@ export default function Home() {
                   label="Shop Contact"
                   value={form.shopContact}
                   onChange={(v) =>
-                    update(
-                      "shopContact",
-                      v
-                    )
+                    update("shopContact", v)
                   }
                 />
               </div>
@@ -399,9 +383,7 @@ export default function Home() {
                   KINGS TECHNOLOGY
                 </div>
 
-                <h1>
-                  ஒரு பக்க ஜாதகம்
-                </h1>
+                <h1>ஒரு பக்க ஜாதகம்</h1>
 
                 <div className="titleEnglish">
                   Kings Tamil Astro
@@ -465,11 +447,8 @@ export default function Home() {
 
               <Info
                 label="ஜென்ம நட்சத்திரம்"
-                value={`${getPlanet(
-                  "சந்திரன்"
-                )?.nakshatra} - பாதம் ${
-                  getPlanet("சந்திரன்")
-                    ?.pada
+                value={`${getPlanet("சந்திரன்")?.nakshatra} - பாதம் ${
+                  getPlanet("சந்திரன்")?.pada
                 }`}
               />
 
@@ -502,22 +481,14 @@ export default function Home() {
                   </thead>
 
                   <tbody>
-                    {planets.map(
+                    {planets.slice(0, 7).map(
                       (planetName) => {
                         const planet =
-                          getPlanet(
-                            planetName
-                          );
+                          getPlanet(planetName);
 
                         return (
-                          <tr
-                            key={
-                              planetName
-                            }
-                          >
-                            <td>
-                              {planetName}
-                            </td>
+                          <tr key={planetName}>
+                            <td>{planetName}</td>
 
                             <td>
                               {planet
@@ -549,41 +520,17 @@ export default function Home() {
                       }
                     )}
 
-                    <tr>
-                      <td>ராகு</td>
-                      <td>
-                        {chart.rahu.rasi}
-                      </td>
-                      <td>
-                        {chart.rahu.nakshatra}
-                      </td>
-                      <td>
-                        {chart.rahu.pada}
-                      </td>
-                      <td>
-                        {formatDegree(
-                          chart.rahu.longitude
-                        )}
-                      </td>
-                    </tr>
+                    <PlanetRow
+                      name="ராகு"
+                      planet={chart.rahu}
+                      formatDegree={formatDegree}
+                    />
 
-                    <tr>
-                      <td>கேது</td>
-                      <td>
-                        {chart.ketu.rasi}
-                      </td>
-                      <td>
-                        {chart.ketu.nakshatra}
-                      </td>
-                      <td>
-                        {chart.ketu.pada}
-                      </td>
-                      <td>
-                        {formatDegree(
-                          chart.ketu.longitude
-                        )}
-                      </td>
-                    </tr>
+                    <PlanetRow
+                      name="கேது"
+                      planet={chart.ketu}
+                      formatDegree={formatDegree}
+                    />
                   </tbody>
                 </table>
               </Panel>
@@ -591,60 +538,43 @@ export default function Home() {
               <Panel title="ராசி கட்டம்">
                 <SouthIndianChart
                   chart={chart}
-                  type="rasi"
                 />
               </Panel>
 
               <Panel title="நவாம்ச கட்டம்">
-                <NavamsaChart
-                  chart={chart}
-                />
+                <NavamsaChart chart={chart} />
               </Panel>
 
-              <Panel title="லக்னம் மற்றும் முக்கிய விவரங்கள்">
+              <Panel title="முக்கிய ஜாதக விவரங்கள்">
                 <div className="dasa">
                   <div>
                     <span>லக்னம்</span>
+                    <b>{chart.lagna.rasi}</b>
+                  </div>
+
+                  <div>
+                    <span>லக்ன நட்சத்திரம்</span>
+                    <b>{chart.lagna.nakshatra}</b>
+                  </div>
+
+                  <div>
+                    <span>சந்திர ராசி</span>
                     <b>
-                      {chart.lagna.rasi}
+                      {getPlanet("சந்திரன்")?.rasi}
                     </b>
                   </div>
 
                   <div>
-                    <span>
-                      லக்ன நட்சத்திரம்
-                    </span>
-
+                    <span>சந்திர நட்சத்திரம்</span>
                     <b>
-                      {chart.lagna.nakshatra}
+                      {getPlanet("சந்திரன்")?.nakshatra}
                     </b>
                   </div>
 
                   <div>
-                    <span>
-                      சந்திர ராசி
-                    </span>
-
+                    <span>சந்திர பாதம்</span>
                     <b>
-                      {
-                        getPlanet(
-                          "சந்திரன்"
-                        )?.rasi
-                      }
-                    </b>
-                  </div>
-
-                  <div>
-                    <span>
-                      சந்திர நட்சத்திரம்
-                    </span>
-
-                    <b>
-                      {
-                        getPlanet(
-                          "சந்திரன்"
-                        )?.nakshatra
-                      }
+                      {getPlanet("சந்திரன்")?.pada}
                     </b>
                   </div>
                 </div>
@@ -656,21 +586,15 @@ export default function Home() {
               form.shopContact) && (
               <footer className="shopFooter">
                 {form.shopName && (
-                  <b>
-                    {form.shopName}
-                  </b>
+                  <b>{form.shopName}</b>
                 )}
 
                 {form.shopPlace && (
-                  <span>
-                    {form.shopPlace}
-                  </span>
+                  <span>{form.shopPlace}</span>
                 )}
 
                 {form.shopContact && (
-                  <span>
-                    {form.shopContact}
-                  </span>
+                  <span>{form.shopContact}</span>
                 )}
               </footer>
             )}
@@ -683,21 +607,15 @@ export default function Home() {
                 )}
               </span>
 
-              <b>
-                KINGS TECHNOLOGY
-              </b>
+              <b>KINGS TECHNOLOGY</b>
 
-              <span>
-                ஒரு பக்க ஜாதகம்
-              </span>
+              <span>ஒரு பக்க ஜாதகம்</span>
             </footer>
           </section>
 
           <div className="printButtons no-print">
             <button
-              onClick={() =>
-                window.print()
-              }
+              onClick={() => window.print()}
             >
               Print / Save as PDF
             </button>
@@ -739,9 +657,7 @@ function Field({
         value={value}
         placeholder={placeholder}
         onChange={(e) =>
-          onChange(
-            e.target.value
-          )
+          onChange(e.target.value)
         }
       />
     </label>
@@ -776,7 +692,6 @@ function Info({
   return (
     <div className="infoBox">
       <small>{label}</small>
-
       <b>{value || "—"}</b>
     </div>
   );
@@ -797,11 +712,36 @@ function Panel({
   );
 }
 
+function PlanetRow({
+  name,
+  planet,
+  formatDegree,
+}: {
+  name: string;
+  planet: Planet;
+  formatDegree: (value: number) => string;
+}) {
+  return (
+    <tr>
+      <td>{name}</td>
+
+      <td>{planet.rasi}</td>
+
+      <td>{planet.nakshatra}</td>
+
+      <td>{planet.pada}</td>
+
+      <td>
+        {formatDegree(planet.longitude)}
+      </td>
+    </tr>
+  );
+}
+
 function SouthIndianChart({
   chart,
 }: {
   chart: BirthChart;
-  type: "rasi";
 }) {
   const cells = [
     "மேஷம்",
@@ -879,11 +819,6 @@ function NavamsaChart({
 }: {
   chart: BirthChart;
 }) {
-  /*
-    Simple navamsa sign calculation from each
-    planet's sidereal longitude.
-  */
-
   const allPlanets = [
     chart.lagna,
     ...chart.planets,
@@ -891,15 +826,11 @@ function NavamsaChart({
     chart.ketu,
   ];
 
-  const navamsaCells = Array.from(
-    { length: 12 },
-    (_, index) => index
-  );
-
   return (
     <div className="southChart">
-      {navamsaCells.map(
-        (index) => {
+      {Array.from(
+        { length: 12 },
+        (_, index) => {
           const planetsHere =
             allPlanets.filter(
               (planet) => {
@@ -908,8 +839,13 @@ function NavamsaChart({
                     planet.rasi
                   );
 
+                if (signIndex < 0) {
+                  return false;
+                }
+
                 const degree =
-                  planet.longitude %
+                  ((planet.longitude % 30) +
+                    30) %
                   30;
 
                 const pada =
@@ -923,9 +859,7 @@ function NavamsaChart({
                     pada) %
                   12;
 
-                return (
-                  navamsa === index
-                );
+                return navamsa === index;
               }
             );
 
@@ -942,9 +876,7 @@ function NavamsaChart({
                 (planet) => (
                   <span
                     className="chartPlanet"
-                    key={
-                      planet.name
-                    }
+                    key={planet.name}
                   >
                     {planet.name}
                   </span>
