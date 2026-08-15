@@ -122,18 +122,18 @@ export default function Home(){
     <div><span>யோகம் - கரணம்</span><b>{data.yoga} / {data.karana}</b></div>
    </section>
 
-   <div className="mainGrid">
+   <div className="mainGrid compactMain">
     <section className="box planetBox"><h2>துல்லியமான நிராயன கிரக நிலைகள்</h2>
      <table><thead><tr><th>கிரகம்</th><th>பாகை-கலை</th><th>நட்சத்திரம்</th><th>பாதம்</th><th>ராசி</th></tr></thead>
      <tbody>{data.planets.map((p:Planet)=><tr key={p.name}><td>{p.name}</td><td>{formatDegree(p.degree)}</td><td>{nakshatras[p.nak]}</td><td>{p.pada}</td><td>{signs[p.sign]}</td></tr>)}</tbody></table>
     </section>
+
     <Chart data={data} title="ராசி கட்டம்"/>
+
+    <Chart data={data} title="நவாம்ச கட்டம்" navamsa/>
    </div>
 
-   <div className="bottomGrid">
-    <Chart data={data} title="நவாம்சம்" navamsa/>
-    <section className="box dasha"><h2>தசா இருப்பு</h2><div className="dashLine"><b>{data.dasha}</b><span>{data.dashaBalance}</span></div><div className="dashLine"><b>நடப்பு தசை</b><span>கணக்கீடு அடிப்படையில்</span></div><div className="dashLine"><b>பாவக மாற்றம்</b><span>பிறப்பு லக்னத்தை அடிப்படையாகக் கொண்டு</span></div></section>
-   </div>
+   <section className="box dasha compactDasha"><h2>தசா இருப்பு</h2><div className="dashLine"><b>{data.dasha}</b><span>{data.dashaBalance}</span></div><div className="dashLine"><b>நடப்பு தசை</b><span>கணக்கீடு அடிப்படையில்</span></div><div className="dashLine"><b>பாவக மாற்றம்</b><span>பிறப்பு லக்னத்தை அடிப்படையாகக் கொண்டு</span></div></section>
 
    {hasShop&&<section className="shopPrint"><div className="shopTitle">வாடிக்கையாளர் பயன்பாட்டிற்காக</div><div className="shopLine">
      {f.shopName&&<span><b>கடை:</b> {f.shopName}</span>}
