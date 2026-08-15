@@ -1,50 +1,413 @@
-@page{size:A4 portrait;margin:0}
-:root{--blue:#185b9e;--blue2:#e9f3ff;--line:#9db9d5;--ink:#17324d;--paper:#fff}
-*{box-sizing:border-box}
-html,body{margin:0;background:#eef5fb;color:var(--ink);font-family:Georgia,"Noto Serif Tamil",serif}
-input,select,button{font:inherit}
-.editor{width:min(1080px,calc(100% - 32px));margin:28px auto;background:white;border:1px solid #c4d6e7;border-radius:14px;padding:26px}
-.brand{border-bottom:2px solid var(--blue);padding-bottom:16px;margin-bottom:20px}
-.brand b{font:700 12px Arial,sans-serif;letter-spacing:3px;color:var(--blue)}
-.brand h1{margin:7px 0 0;font-size:34px;color:var(--ink)}
-.brand p{margin:4px 0;color:#66809a}
-form h2{font-size:18px;margin:22px 0 10px;color:var(--blue)}
-.form-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.field{display:flex;flex-direction:column;gap:5px}
-.field span{font-size:14px;font-weight:700}
-.field em{font-style:normal;font-weight:400;color:#7990a6;font-size:11px}
-.field input,.field select{height:42px;border:1px solid #b9cee1;border-radius:8px;padding:0 10px;background:#fff}
-.generate,.actions button{margin-top:20px;border:0;border-radius:7px;background:var(--blue);color:#fff;padding:12px 20px;cursor:pointer;font-weight:700}
-.a4{width:210mm;height:297mm;margin:22px auto;padding:8mm 11mm 6mm;background:var(--paper);box-shadow:0 0 12px #b9c9d8;overflow:hidden}
-.report-head{display:grid;grid-template-columns:58px 1fr 58px;align-items:center;gap:10px}
-.deity{text-align:center}
-.deity-ring{width:54px;height:54px;margin:auto;border:1px solid var(--blue);border-radius:50%;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#fff}
-.deity img{width:100%;height:100%;object-fit:cover}
-.deity small{display:block;font-size:8px;color:var(--blue);margin-top:2px}
-.head-center{text-align:center}
-.tiny{font:700 8px Arial,sans-serif;letter-spacing:2px;color:var(--blue)}
-.head-center h1{font-size:25px;margin:4px 0;color:var(--blue)}
-.sub{font-size:8px;color:#67809a}
-.headline{display:block;font-size:14px;margin-top:5px;color:var(--blue)}
-.sentence{font-size:9px;margin:3px 0 0}
-.rule{border-top:2px solid var(--blue);margin:5px 0 8px}
-.info-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
-.info{border:1px solid var(--line);min-height:32px;padding:4px 6px;background:#fff}
-.info small{display:block;font-size:7px;color:#66809a}
-.info b{display:block;font:700 9px Arial,sans-serif;margin-top:2px}
-.content-grid{display:grid;grid-template-columns:1.25fr 1fr;gap:6px;margin-top:6px}
-.panel{border:1px solid var(--line);padding:5px;min-height:100px}
-.panel h2{font-size:12px;margin:0 0 5px;padding-bottom:4px;border-bottom:1px solid var(--line);color:var(--blue)}
-table{width:100%;border-collapse:collapse;font-size:7.5px}
-th,td{border:1px solid var(--line);padding:3px;text-align:left}
-th{background:var(--blue2);color:var(--blue)}
-.chart{position:relative;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(4,1fr);aspect-ratio:1;border:1px solid var(--line);overflow:hidden}
-.chart>div{border:1px solid var(--line);padding:4px;font-size:7px;text-align:center}
-.chart .empty{color:transparent}
-.chart-center{position:absolute;left:25%;top:25%;width:50%;height:50%;background:#fff;display:flex;align-items:center;justify-content:center;border:1px solid var(--line)!important;font-size:10px!important;font-weight:700;color:var(--blue)}
-.dash p{display:flex;justify-content:space-between;border-bottom:1px dotted var(--line);padding:5px 2px;margin:0;font-size:8px}
-.shop-footer{margin-top:6px;border-top:1px solid var(--blue);border-bottom:1px solid var(--line);padding:5px;display:flex;gap:18px;justify-content:center;font-size:8px;color:var(--blue)}
-.print-footer{display:flex;justify-content:space-between;border-top:1px solid var(--line);margin-top:6px;padding-top:4px;font:7px Arial,sans-serif;color:#66809a}
-.actions{text-align:center;margin:0 auto 30px}
-@media(max-width:800px){.form-grid{grid-template-columns:1fr}.a4{width:100%;height:auto;min-height:auto;margin:10px 0}}
-@media print{body{background:#fff}.no-print{display:none!important}.a4{width:210mm;height:297mm;margin:0;box-shadow:none}}
+@page {
+  size: A4 portrait;
+  margin: 0;
+}
+
+:root {
+  --blue: #075b9d;
+  --blue-dark: #073f70;
+  --blue-light: #edf6fd;
+  --line: #9abbd7;
+  --text: #173a58;
+  --white: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: #edf5fb;
+  color: var(--text);
+  font-family: "Noto Serif Tamil", "Latha", Georgia, serif;
+}
+
+/* ---------- FORM ---------- */
+
+.editor {
+  width: min(1050px, calc(100% - 30px));
+  margin: 25px auto;
+  background: white;
+  border: 1px solid #c5d9ea;
+  border-radius: 14px;
+  padding: 28px;
+}
+
+.editorHeader {
+  border-bottom: 2px solid var(--blue);
+  text-align: center;
+  padding-bottom: 18px;
+  margin-bottom: 20px;
+}
+
+.brandSmall {
+  font-family: Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 3px;
+  color: var(--blue);
+}
+
+.editorHeader h1 {
+  color: var(--blue-dark);
+  margin: 7px 0 2px;
+  font-size: 32px;
+}
+
+.editorHeader p {
+  margin: 0;
+  color: #6b879e;
+}
+
+.editor h2 {
+  color: var(--blue-dark);
+  font-size: 18px;
+  margin: 20px 0 10px;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.field span {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.field input,
+.field select {
+  height: 42px;
+  border: 1px solid #b7cfe3;
+  border-radius: 8px;
+  padding: 0 10px;
+  background: white;
+  color: var(--text);
+}
+
+details {
+  margin-top: 15px;
+  border-top: 1px solid #d5e3ef;
+  padding-top: 10px;
+}
+
+summary {
+  cursor: pointer;
+  color: var(--blue-dark);
+  font-weight: 700;
+}
+
+details .formGrid {
+  margin-top: 12px;
+}
+
+.generateButton,
+.printButtons button {
+  background: var(--blue);
+  color: white;
+  border: 0;
+  border-radius: 7px;
+  padding: 12px 20px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.generateButton {
+  margin-top: 22px;
+}
+
+/* ---------- A4 ---------- */
+
+.a4 {
+  width: 210mm;
+  height: 297mm;
+  margin: 22px auto;
+  padding: 7mm 10mm 5mm;
+  background: white;
+  box-shadow: 0 0 18px rgba(30, 70, 100, 0.18);
+  overflow: hidden;
+}
+
+/* ---------- HEADER ---------- */
+
+.reportHeader {
+  display: grid;
+  grid-template-columns: 65px 1fr 65px;
+  align-items: center;
+  gap: 12px;
+}
+
+.deity {
+  text-align: center;
+}
+
+.deityImage {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin: auto;
+  border: 2px solid var(--blue);
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.deityImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.deity small {
+  display: block;
+  color: var(--blue-dark);
+  font-size: 8px;
+  margin-top: 3px;
+}
+
+.titleArea {
+  text-align: center;
+}
+
+.company {
+  font-family: Arial, sans-serif;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: var(--blue);
+}
+
+.titleArea h1 {
+  margin: 3px 0;
+  font-size: 27px;
+  color: var(--blue-dark);
+}
+
+.titleEnglish {
+  font-family: Arial, sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--blue);
+}
+
+.titleArea p {
+  font-size: 8px;
+  color: #66829b;
+  margin: 3px 0;
+}
+
+.headline {
+  display: block;
+  color: var(--blue-dark);
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.sentence {
+  color: #426b8d;
+  font-size: 8px;
+  margin-top: 3px;
+}
+
+.blueRule {
+  border-top: 2px solid var(--blue);
+  margin: 5px 0 7px;
+}
+
+/* ---------- DETAILS ---------- */
+
+.detailsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+}
+
+.infoBox {
+  border: 1px solid var(--line);
+  min-height: 32px;
+  padding: 4px 6px;
+  background: white;
+}
+
+.infoBox small {
+  display: block;
+  font-size: 7px;
+  color: #65819a;
+}
+
+.infoBox b {
+  display: block;
+  font-family: Arial, sans-serif;
+  font-size: 9px;
+  margin-top: 2px;
+}
+
+/* ---------- ASTROLOGY ---------- */
+
+.astrologyGrid {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.panel {
+  border: 1px solid var(--line);
+  padding: 5px;
+  min-height: 105px;
+}
+
+.panel h2 {
+  color: var(--blue-dark);
+  font-size: 12px;
+  margin: 0 0 5px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--line);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 7.5px;
+}
+
+th,
+td {
+  border: 1px solid var(--line);
+  padding: 3px;
+}
+
+th {
+  background: var(--blue-light);
+  color: var(--blue-dark);
+}
+
+/* ---------- SOUTH INDIAN CHART ---------- */
+
+.southChart {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  aspect-ratio: 1;
+  border: 1px solid var(--line);
+}
+
+.southChart > div {
+  border: 1px solid var(--line);
+  min-height: 25px;
+  padding: 3px;
+  font-size: 7px;
+  text-align: center;
+}
+
+.southChart strong {
+  position: absolute;
+  left: 25%;
+  top: 25%;
+  width: 50%;
+  height: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  border: 1px solid var(--line);
+  color: var(--blue-dark);
+  font-size: 10px;
+}
+
+/* ---------- DASA ---------- */
+
+.dasa div {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px dotted var(--line);
+  padding: 6px 2px;
+  font-size: 8px;
+}
+
+.dasa b {
+  color: var(--blue-dark);
+}
+
+/* ---------- SHOP ---------- */
+
+.shopFooter {
+  margin-top: 6px;
+  padding: 5px;
+  border-top: 1px solid var(--blue);
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  font-family: Arial, sans-serif;
+  font-size: 8px;
+  color: var(--blue-dark);
+}
+
+/* ---------- FOOTER ---------- */
+
+.reportFooter {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid var(--line);
+  margin-top: 6px;
+  padding-top: 4px;
+  font-family: Arial, sans-serif;
+  font-size: 7px;
+  color: #66829b;
+}
+
+.printButtons {
+  text-align: center;
+  margin: 15px auto 30px;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+/* ---------- PRINT ---------- */
+
+@media print {
+  body {
+    background: white;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .a4 {
+    width: 210mm;
+    height: 297mm;
+    margin: 0;
+    padding: 7mm 10mm 5mm;
+    box-shadow: none;
+  }
+}
+
+@media (max-width: 800px) {
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .a4 {
+    width: 100%;
+    height: auto;
+    min-height: 297mm;
+    margin: 0;
+  }
+}
