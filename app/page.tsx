@@ -1,7 +1,7 @@
  "use client";
 
 import { useState } from "react";
-import { calculateChart, formatDegree, navamsaOfPlanet, nakshatras, shortSigns, signs, type ChartData, type Planet } from "../lib/astro";
+import { calculateChart, formatDegree, navamsaOfPlanet, nakshatras, nakshatraLetter, shortSigns, signs, type ChartData, type Planet } from "../lib/astro";
 
 type Form={
   name:string; father:string; mother:string; date:string; time:string; place:string; gender:string;
@@ -40,41 +40,6 @@ function Chart({data,title,navamsa=false}:{data:ChartData;title:string;navamsa?:
     </div>)}
     <div className="chartCenter"><div>ராசி</div><small>நிராயன • லஹிரி</small></div>
   </div></section>
-}
-
-const NAKSHATRA_LETTERS = [
-  ["சு","சே","சோ","லா"],
-  ["லி","லு","லே","லோ"],
-  ["அ","இ","உ","ஏ"],
-  ["ஓ","வா","வி","வு"],
-  ["வே","வோ","கா","கி"],
-  ["கு","கெ","ங","ச"],
-  ["கே","கோ","ஹ","ஹி"],
-  ["ஹு","ஹே","ஹோ","ட"],
-  ["டி","டு","டே","டோ"],
-  ["ம","மி","மு","மே"],
-  ["மோ","டா","டி","டு"],
-  ["டே","டோ","ப","பி"],
-  ["பூ","ஷ","ண","ட"],
-  ["பே","போ","ர","ரி"],
-  ["ரு","ரே","ரோ","த"],
-  ["தி","து","தே","தோ"],
-  ["ந","நி","நு","நே"],
-  ["நோ","யா","யி","யு"],
-  ["யே","யோ","பா","பி"],
-  ["பூ","தா","ப","தி"],
-  ["பே","போ","ஜ","ஜி"],
-  ["ஜு","ஜே","ஜோ","கா"],
-  ["க","கி","கு","கே"],
-  ["கோ","ஸ","ஸி","ஸு"],
-  ["சே","சோ","த","தீ"],
-  ["து","த","ஜ","ஞ"],
-  ["தே","தோ","ச","சி"]
-] as const;
-
-function nakshatraLetter(nakIndex:number, pada:number){
-  const row = NAKSHATRA_LETTERS[nakIndex];
-  return row?.[Math.max(1, Math.min(4, pada)) - 1] ?? "—";
 }
 
 export default function Home(){
@@ -152,7 +117,7 @@ export default function Home(){
          <div><span>லக்னம்</span><b>{signs[data.lagna]}</b></div>
          <div><span>ராசி</span><b>{signs[data.rasi]}</b></div>
          <div><span>நட்சத்திரம்</span><b>{nakshatras[data.moonNak]} {data.moonPada}</b></div>
-         <div><span>நட்சத்திர எழுத்து</span><b>{nakshatraLetter(data.moonNak, data.moonPada)}</b></div>
+         <div><span>நட்சத்திர எழுத்து</span><b>{nakshatraLetter(data.moonNak,data.moonPada)}</b></div>
          <div><span>பட்சம்-திதி</span><b>{data.tithi}</b></div>
          <div><span>யோகம்-கரணம்</span><b>{data.yoga} / {data.karana}</b></div>
          <div><span>தமிழ்ப்பிறைமை</span><b>{f.gender}</b></div>
@@ -173,7 +138,7 @@ export default function Home(){
    </section>
 
    <div className="noteLine">
-     <b>யோகம்</b> {data.yoga} &nbsp; <b>நட்சத்திரம்</b> {nakshatras[data.moonNak]} &nbsp; <b>ராசி</b> {signs[data.rasi]}
+     <b>யோகம்</b> {data.yoga} &nbsp;•&nbsp; <b>நட்சத்திரம்</b> {nakshatras[data.moonNak]} {data.moonPada} &nbsp;•&nbsp; <b>நட்சத்திர எழுத்து</b> {nakshatraLetter(data.moonNak,data.moonPada)} &nbsp;•&nbsp; <b>ராசி</b> {signs[data.rasi]}
    </div>
 
    <section className="planetSection">

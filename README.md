@@ -1,16 +1,11 @@
 # Kings Tamil Astro
 
-A4 one-page South Indian Tamil Jathagam generator.
+A4 single-page South Indian Tamil Jathagam generator.
 
-## Layout
-- Uses the existing astrology calculation in `lib/astro.ts`.
-- Print report is fixed to A4 portrait.
-- Rasi and Navamsa charts are side-by-side.
-- Details and planetary table are expanded to use the full A4 page.
-- Blue/white palette.
-- Optional father, mother, headline and shop details.
-- QR code is not used.
-
-Run:
-npm install
-npm run dev
+Updates in this version:
+- Nakshatra letter is automatic from Moon Nakshatra + Pada.
+- No manual Nakshatra Letter input.
+- Tamil labels and spacing cleaned up.
+- A4 print layout uses stable table row heights and line spacing.
+- Rasi and Navamsa charts remain side-by-side.
+- Existing astronomy calculation logic is preserved.
