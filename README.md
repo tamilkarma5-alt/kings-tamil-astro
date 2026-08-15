@@ -1,40 +1,14 @@
-# Kings Tamil Astro
+# Kings Tamil Astro — Final V1
 
-Professional Tamil astrology report UI for Vercel/Next.js.
+Built around the supplied Astro Vision Tamil Jathagam reference:
+- one-page A4 report
+- South Indian 4x4 chart with empty 2x2 centre
+- South Indian Navamsa chart
+- optional father/mother fields
+- automatic place geocoding through Nominatim
+- sidereal/Lahiri-style calculation
+- planetary positions, rasi, nakshatra, pada, tithi, yoga, karana
+- Vimshottari dasha balance
+- browser Print / Save as PDF
 
-## Run
-
-```bash
-npm install
-npm run dev
-```
-
-Open http://localhost:3000
-
-## Current version
-
-- Tamil birth-details form
-- One-page report preview
-- Report ID
-- Generated date/time
-- PDF generation
-- QR code in PDF
-- Kings Tamil Astro branding
-- Responsive mobile UI
-
-## Important next integration
-
-The current preview intentionally uses sample astrology values. For real calculations, connect a Swiss Ephemeris-based engine.
-
-A current option is `@swisseph/browser`, which runs Swiss Ephemeris calculations in WebAssembly in the browser and includes the Moshier ephemeris. Another option is the `sweph` Node binding. Check the license requirements before commercial deployment.
-
-Replace:
-
-- `sample.rasi`
-- `sample.nakshatra`
-- `sample.pada`
-- `sample.lagna`
-
-with the real calculation result.
-
-Also replace `siteUrl` with the final Kings Tamil Astro website URL before production.
+Astrology calculation uses Astronomy Engine (MIT) for astronomical positions; sidereal conversion and traditional chart calculations are implemented in `lib/astro.ts`.
