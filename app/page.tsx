@@ -98,7 +98,7 @@ export default function Home(){
    <header className="reportHead">
      <DeityImage src={MURUGAN_IMAGE} label="ஸ்ரீ முருகன்" />
      <div className="headTitle">
-       <div className="software">ஜென்ம ஜாதகம் • KINGS TECHNOLOGY</div>
+       <div className="brandTiny">ஜென்ம ஜாதகம் • KINGS TECHNOLOGY</div>
        <h1>ஒரு பக்க ஜாதகம்</h1>
        {f.headline&&<strong className="headline">{f.headline}</strong>}
        <p>பிறப்பு விவரங்களின் அடிப்படையில் உருவாக்கப்பட்ட ஜாதக அறிக்கை</p>
@@ -106,45 +106,79 @@ export default function Home(){
      <DeityImage src={VINAYAGAR_IMAGE} label="ஸ்ரீ விநாயகர்" />
    </header>
 
-   <section className="infoGrid">
-    {[
-      ["பெயர்",f.name],["தந்தை",f.father||"—"],["தாய்",f.mother||"—"],["பிறந்த தேதி",f.date],
-      ["பிறந்த நேரம்",f.time],["பிறந்த இடம்",f.place],["பாலினம்",f.gender],["அயனாம்சம்","லஹிரி"]
-    ].map(x=><div key={x[0]}><span>{x[0]}</span><b>{x[1]}</b></div>)}
+   <div className="companyStrip">Software by : Kings Technology Tamil Jathagam</div>
+
+   <section className="detailsPanel">
+     <div className="detailsCol">
+       <h2>{f.name}</h2>
+       <div className="detailRows">
+         <div><span>தந்தை</span><b>{f.father||"—"}</b></div>
+         <div><span>தாய்</span><b>{f.mother||"—"}</b></div>
+         <div><span>லக்னம்</span><b>{signs[data.lagna]}</b></div>
+         <div><span>ராசி</span><b>{signs[data.rasi]}</b></div>
+         <div><span>நட்சத்திரம்</span><b>{nakshatras[data.moonNak]} {data.moonPada}</b></div>
+         <div><span>பட்சம்-திதி</span><b>{data.tithi}</b></div>
+         <div><span>யோகம்-கரணம்</span><b>{data.yoga} / {data.karana}</b></div>
+         <div><span>தமிழ்ப்பிறைமை</span><b>{f.gender}</b></div>
+       </div>
+     </div>
+     <div className="detailsCol rightDetails">
+       <div className="detailRows">
+         <div><span>தேதி</span><b>{f.date}</b></div>
+         <div><span>நேரம்</span><b>{f.time}</b></div>
+         <div><span>உதயாதி நாழிகை</span><b>—</b></div>
+         <div><span>இடம்</span><b>{f.place}</b></div>
+         <div><span>அட்ச/தீர்க்க-ரேகை</span><b>{f.lat||"—"} / {f.lon||"—"}</b></div>
+         <div><span>பொதுநேரம்-திருத்தம்</span><b>5.5</b></div>
+         <div><span>சூரிய உதயம்</span><b>—</b></div>
+         <div><span>சூரிய அஸ்தமனம்</span><b>—</b></div>
+       </div>
+     </div>
    </section>
 
-   <section className="summaryGrid">
-    <div><span>லக்னம்</span><b>{signs[data.lagna]}</b><small>{formatDegree(data.lagnaDegree)}</small></div>
-    <div><span>ராசி</span><b>{signs[data.rasi]}</b></div>
-    <div><span>நட்சத்திரம்</span><b>{nakshatras[data.moonNak]}</b></div>
-    <div><span>பாதம்</span><b>{data.moonPada}</b></div>
-    <div><span>பட்சம் - திதி</span><b>{data.tithi}</b></div>
-    <div><span>யோகம் - கரணம்</span><b>{data.yoga} / {data.karana}</b></div>
-   </section>
-
-   <div className="mainGrid compactMain">
-    <section className="box planetBox"><h2>துல்லியமான நிராயன கிரக நிலைகள்</h2>
-     <table><thead><tr><th>கிரகம்</th><th>பாகை-கலை</th><th>நட்சத்திரம்</th><th>பாதம்</th><th>ராசி</th></tr></thead>
-     <tbody>{data.planets.map((p:Planet)=><tr key={p.name}><td>{p.name}</td><td>{formatDegree(p.degree)}</td><td>{nakshatras[p.nak]}</td><td>{p.pada}</td><td>{signs[p.sign]}</td></tr>)}</tbody></table>
-    </section>
-
-    <Chart data={data} title="ராசி கட்டம்"/>
-
-    <Chart data={data} title="நவாம்ச கட்டம்" navamsa/>
+   <div className="noteLine">
+     <b>யோகம்</b> {data.yoga} &nbsp; <b>நட்சத்திரம்</b> {nakshatras[data.moonNak]} &nbsp; <b>ராசி</b> {signs[data.rasi]}
    </div>
 
-   <section className="box dasha compactDasha"><h2>தசா இருப்பு</h2><div className="dashLine"><b>{data.dasha}</b><span>{data.dashaBalance}</span></div><div className="dashLine"><b>நடப்பு தசை</b><span>கணக்கீடு அடிப்படையில்</span></div><div className="dashLine"><b>பாவக மாற்றம்</b><span>பிறப்பு லக்னத்தை அடிப்படையாகக் கொண்டு</span></div></section>
+   <section className="planetSection">
+     <h2>துல்லியமான நிராயன கிரக நிலைகள் (திருக்கணிதம்)</h2>
+     <table className="planetTable">
+       <thead><tr><th>கிரகம்</th><th>பாகை-கலை</th><th>நட்சத்திரம்</th><th>பாதம்</th><th>நட்-அதிபதி</th><th>ராசி</th><th>பாகை-கலை</th><th>நிலை</th></tr></thead>
+       <tbody>{data.planets.map((p:Planet)=><tr key={p.name}>
+         <td>{p.name}</td><td>{formatDegree(p.degree)}</td><td>{nakshatras[p.nak]}</td><td>{p.pada}</td>
+         <td>{p.name==="சூரியன்"?"புதன்":p.name==="சந்திரன்"?"சூரியன்":p.name==="செவ்வாய்"?"ராகு":p.name==="புதன்"?"சனி":p.name==="குரு"?"சனி":p.name==="சுக்கிரன்"?"சந்திரன்":p.name==="சனி"?"புதன்":"கேது"}</td>
+         <td>{signs[p.sign]}</td><td>{formatDegree(p.degree)}</td><td>{p.retro?"வ":""}</td>
+       </tr>)}</tbody>
+     </table>
+   </section>
 
-   {hasShop&&<section className="shopPrint"><div className="shopTitle">வாடிக்கையாளர் பயன்பாட்டிற்காக</div><div className="shopLine">
-     {f.shopName&&<span><b>கடை:</b> {f.shopName}</span>}
-     {f.shopPlace&&<span><b>இடம்:</b> {f.shopPlace}</span>}
-     {f.shopContact&&<span><b>தொடர்பு:</b> {f.shopContact}</span>}
-   </div></section>}
+   <section className="chartsRow">
+     <Chart data={data} title="ராசி" />
+     <Chart data={data} title="நவாம்சம்" navamsa />
+   </section>
 
-   <section className="reference"><b>குறிப்பு:</b> நிராயன (Lahiri) முறையில் கணக்கிடப்பட்டது. பிறந்த இடத்தின் coordinates தானாக பெறப்படுகின்றன; தேவையெனில் Optional பகுதியில் மாற்றலாம்.</section>
+   <section className="dashaBar">
+     <div><b>சூரிய தசை இருப்பு</b> {data.dashaBalance}</div>
+     <div><b>நடப்பு தசை</b> {data.dasha}</div>
+     <div><b>பாவக மாற்றம்</b> லக்னம் - சந்திரன் அடிப்படையில்</div>
+   </section>
 
-   <footer><div><strong>Kings Tamil Astro</strong><span>Software by : Kings Technology</span></div><div><span>Report ID : KTA-{Date.now().toString(36).toUpperCase()}</span><span>Generated : {now}</span><span>Website : kings-tamil-astro.vercel.app</span></div></footer>
-   <div className="no-print actions"><button onClick={()=>window.print()}>🖨️ Print / Save as PDF</button><button onClick={()=>window.scrollTo({top:0,behavior:"smooth"})}>← புதிய ஜாதகம்</button></div>
+   {hasShop&&<section className="shopPrint">
+     <b>{f.headline||"வாடிக்கையாளர் பயன்பாட்டிற்காக"}</b>
+     <span>{f.shopName&&`கடை: ${f.shopName}`}</span>
+     <span>{f.shopPlace&&`இடம்: ${f.shopPlace}`}</span>
+     <span>{f.shopContact&&`தொடர்பு: ${f.shopContact}`}</span>
+   </section>}
+
+   <footer className="reportFooter">
+     <span><strong>Kings Tamil Astro</strong> • Software by Kings Technology</span>
+     <span>Printed on {now}</span>
+   </footer>
+
+   <div className="no-print actions">
+     <button onClick={()=>window.print()}>🖨️ Print / Save as PDF</button>
+     <button onClick={()=>window.scrollTo({top:0,behavior:"smooth"})}>← புதிய ஜாதகம்</button>
+   </div>
   </section>}
  </main>
 }
