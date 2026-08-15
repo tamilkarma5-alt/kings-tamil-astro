@@ -2,499 +2,186 @@ import * as Astronomy from "astronomy-engine";
 
 export type Planet = {
   name: string;
-  longitude: number;
-  rasi: string;
-  nakshatra: string;
+  short: string;
+  lon: number;
+  sign: number;
+  degree: number;
+  nak: number;
   pada: number;
+  retro?: boolean;
 };
 
-export type BirthChart = {
+export type ChartData = {
   planets: Planet[];
-  lagna: Planet;
-  rahu: Planet;
-  ketu: Planet;
+  lagna: number;
+  lagnaDegree: number;
+  rasi: number;
+  moonNak: number;
+  moonPada: number;
+  tithi: string;
+  yoga: string;
+  karana: string;
+  dasha: string;
+  dashaBalance: string;
+  navamsa: number;
 };
 
-const RASI = [
-  "மேஷம்",
-  "ரிஷபம்",
-  "மிதுனம்",
-  "கடகம்",
-  "சிம்மம்",
-  "கன்னி",
-  "துலாம்",
-  "விருச்சிகம்",
-  "தனுசு",
-  "மகரம்",
-  "கும்பம்",
-  "மீனம்",
+export const signs = [
+  "மேஷம்","ரிஷபம்","மிதுனம்","கடகம்","சிம்மம்","கன்னி",
+  "துலாம்","விருச்சிகம்","தனுசு","மகரம்","கும்பம்","மீனம்"
 ];
 
-const NAKSHATRA = [
-  "அசுவினி",
-  "பரணி",
-  "கார்த்திகை",
-  "ரோகிணி",
-  "மிருகசீரிஷம்",
-  "திருவாதிரை",
-  "புனர்பூசம்",
-  "பூசம்",
-  "ஆயில்யம்",
-  "மகம்",
-  "பூரம்",
-  "உத்திரம்",
-  "ஹஸ்தம்",
-  "சித்திரை",
-  "சுவாதி",
-  "விசாகம்",
-  "அனுஷம்",
-  "கேட்டை",
-  "மூலம்",
-  "பூராடம்",
-  "உத்திராடம்",
-  "திருவோணம்",
-  "அவிட்டம்",
-  "சதயம்",
-  "பூரட்டாதி",
-  "உத்திரட்டாதி",
-  "ரேவதி",
+export const shortSigns = [
+  "மேஷ","ரிஷ","மிது","கட","சிம்","கன்","துலா","விரு","தனு","மகர","கும்","மீன"
 ];
 
-function normalize(deg: number): number {
-  let value = deg % 360;
+export const nakshatras = [
+  "அஸ்வினி","பரணி","கார்த்திகை","ரோகிணி","மிருகசீரிடம்","திருவாதிரை",
+  "புனர்பூசம்","பூசம்","ஆயில்யம்","மகம்","பூரம்","உத்திரம்",
+  "ஹஸ்தம்","சித்திரை","சுவாதி","விசாகம்","அனுஷம்","கேட்டை",
+  "மூலம்","பூராடம்","உத்திராடம்","திருவோணம்","அவிட்டம்","சதயம்",
+  "பூரட்டாதி","உத்திரட்டாதி","ரேவதி"
+];
 
-  if (value < 0) {
-    value += 360;
-  }
+const dashaLords = ["கேது","சுக்கிரன்","சூரியன்","சந்திரன்","செவ்வாய்","ராகு","குரு","சனி","புதன்"];
+const dashaYears: Record<string,number> = {
+  "கேது":7,"சுக்கிரன்":20,"சூரியன்":6,"சந்திரன்":10,"செவ்வாய்":7,
+  "ராகு":18,"குரு":16,"சனி":19,"புதன்":17
+};
+const bodyMap: Array<[string,string,Astronomy.Body]> = [
+  ["சூரியன்","சூரி",Astronomy.Body.Sun],
+  ["சந்திரன்","சந்",Astronomy.Body.Moon],
+  ["செவ்வாய்","செவ்",Astronomy.Body.Mars],
+  ["புதன்","புத",Astronomy.Body.Mercury],
+  ["குரு","குரு",Astronomy.Body.Jupiter],
+  ["சுக்கிரன்","சுக்",Astronomy.Body.Venus],
+  ["சனி","சனி",Astronomy.Body.Saturn]
+];
 
-  return value;
+const norm=(x:number)=>((x%360)+360)%360;
+const ayanamsa=(year:number)=>23.85675 + 0.0139638889*(year-2000);
+const signOf=(lon:number)=>Math.floor(norm(lon)/30);
+const degInSign=(lon:number)=>norm(lon)%30;
+
+function eclipticLongitudeOf(body:Astronomy.Body, date:Date, observer:Astronomy.Observer) {
+  const eq=Astronomy.Equator(body,date,observer,true,true);
+  const ra=eq.ra*15*Math.PI/180;
+  const dec=eq.dec*Math.PI/180;
+  const eps=(23.439291 - 0.0130042*((date.getUTCFullYear()-2000)/100))*Math.PI/180;
+  const x=Math.cos(dec)*Math.cos(ra);
+  const y=Math.cos(dec)*Math.sin(ra);
+  const z=Math.sin(dec);
+  const eclX=x;
+  const eclY=y*Math.cos(eps)+z*Math.sin(eps);
+  return norm(Math.atan2(eclY,eclX)*180/Math.PI);
 }
 
-function rasiFromLongitude(
-  longitude: number
-): string {
-  const index = Math.floor(
-    normalize(longitude) / 30
-  );
-
-  return RASI[index];
+function meanNode(date:Date) {
+  const jd=date.getTime()/86400000+2440587.5;
+  const T=(jd-2451545.0)/36525;
+  return norm(125.04452-1934.136261*T+0.0020708*T*T+(T*T*T)/450000);
 }
 
-function nakshatraFromLongitude(
-  longitude: number
-): {
-  name: string;
-  pada: number;
-} {
-  const value = normalize(longitude);
+function ascendant(date:Date, lat:number, lon:number) {
+  const lst=norm(Astronomy.SiderealTime(date)*15+lon);
+  const eps=(23.439291-0.0130042*((date.getUTCFullYear()-2000)/100))*Math.PI/180;
+  const phi=lat*Math.PI/180, th=lst*Math.PI/180;
+  let tropical=Math.atan2(-Math.cos(th),Math.sin(th)*Math.cos(eps)+Math.tan(phi)*Math.sin(eps))*180/Math.PI;
+  tropical=norm(tropical+180);
+  const sid=norm(tropical-ayanamsa(date.getUTCFullYear()));
+  return { sid, sign:signOf(sid), degree:degInSign(sid) };
+}
 
-  const nakshatraSize = 360 / 27;
-  const padaSize = nakshatraSize / 4;
+function navamsaSign(lon:number) {
+  const s=signOf(lon), part=Math.min(8,Math.floor(degInSign(lon)/(30/9)));
+  const movable=[0,3,6,9].includes(s);
+  const fixed=[1,4,7,10].includes(s);
+  const start=movable?s:fixed?norm(s+8):norm(s+4);
+  return norm(start+part)%12;
+}
 
-  const nakshatraIndex = Math.floor(
-    value / nakshatraSize
-  );
+function nakInfo(lon:number) {
+  const n=Math.floor(norm(lon)/(360/27));
+  const pada=Math.floor((norm(lon)%(360/27))/(360/108))+1;
+  return {n,pada};
+}
 
-  const insideNakshatra =
-    value -
-    nakshatraIndex * nakshatraSize;
+const tithiNames=["அமாவாசை","பிரதமை","த்விதியை","திரிதியை","சதுர்த்தி","பஞ்சமி","ஷஷ்டி","சப்தமி","அஷ்டமி","நவமி","தசமி","ஏகாதசி","த்வாதசி","திரயோதசி","சதுர்தசி","பௌர்ணமி"];
+const yogaNames=["விஷ்கம்பம்","ப்ரீதி","ஆயுஷ்மான்","சௌபாக்யம்","சோபனம்","அதிகண்டம்","சுகர்மம்","த்ருதி","சூலம்","கண்டம்","விருத்தி","த்ருவம்","வ்யாகாதம்","ஹர்ஷணம்","வஜ்ரம்","சித்தி","வ்யதீபாதம்","வரியான்","பரிகம்","சிவம்","சித்தம்","சாத்யம்","சுபம்","சுக்லம்","ப்ரஹ்மம்","இந்திரம்","வைத்ருதி"];
+const karanaNames=["பவம்","பாலவம்","கௌலவம்","தைதிலம்","கரஜை","வணிஜை","விஷ்டி","சகுனி","சதுஷ்பாதம்","நாகவம்","கிம்ஸ்துக்னம்"];
 
-  const pada =
-    Math.floor(
-      insideNakshatra / padaSize
-    ) + 1;
+function panchanga(sun:number, moon:number) {
+  const diff=norm(moon-sun);
+  const ti=Math.floor(diff/12);
+  const tithi=ti===15?"பௌர்ணமி":ti===30?"அமாவாசை":tithiNames[ti%15];
+  const yoga=yogaNames[Math.floor(norm(sun+moon)/(360/27))];
+  const half=Math.floor(diff/6);
+  const karana=karanaNames[half%karanaNames.length];
+  return {tithi,yoga,karana};
+}
 
+function dashaInfo(moonLon:number) {
+  const nk=nakInfo(moonLon).n;
+  const lord=dashaLords[nk%9];
+  const span=360/27;
+  const elapsed=norm(moonLon)%span;
+  const remaining=dashaYears[lord]*(1-elapsed/span);
+  const nextIndex=(dashaLords.indexOf(lord)+1)%9;
+  const next=dashaLords[nextIndex];
   return {
-    name: NAKSHATRA[nakshatraIndex],
-    pada,
+    dasha:`${lord} தசை இருப்பு`,
+    dashaBalance:`${Math.floor(remaining).toString().padStart(2,"0")} வருடம் ${Math.floor((remaining%1)*12).toString().padStart(2,"0")} மாதம்`
   };
 }
 
-function lahiriAyanamsa(
-  date: Date
-): number {
-  const year =
-    date.getUTCFullYear() +
-    date.getUTCMonth() / 12 +
-    date.getUTCDate() / 365.25;
+export function calculateChart(input:{date:string;time:string;lat:number;lon:number}):ChartData {
+  const [y,m,d]=input.date.split("-").map(Number);
+  const [hh,mm]=input.time.split(":").map(Number);
+  const utc=new Date(Date.UTC(y,m-1,d,hh-5,mm-30,0));
+  const observer=new Astronomy.Observer(input.lat,input.lon,0);
+  const ay=ayanamsa(y);
 
-  const yearsFrom2000 = year - 2000;
+  const planets:Planet[]=[];
+  let sun=0,moon=0;
+  for(const [name,short,body] of bodyMap){
+    const tropical=eclipticLongitudeOf(body,utc,observer);
+    const lon=norm(tropical-ay);
+    if(name==="சூரியன்") sun=lon;
+    if(name==="சந்திரன்") moon=lon;
+    const ni=nakInfo(lon);
+    planets.push({name,short,lon,sign:signOf(lon),degree:degInSign(lon),nak:ni.n,pada:ni.pada});
+  }
 
-  return (
-    23.85 +
-    yearsFrom2000 * 0.01396
-  );
-}
+  const node=norm(meanNode(utc)-ay);
+  for(const [name,short,lon] of [["ராகு","ராகு",node],["கேது","கேது",norm(node+180)]] as const){
+    const ni=nakInfo(lon);
+    planets.push({name,short,lon,sign:signOf(lon),degree:degInSign(lon),nak:ni.n,pada:ni.pada});
+  }
 
-function siderealLongitude(
-  tropicalLongitude: number,
-  date: Date
-): number {
-  return normalize(
-    tropicalLongitude -
-      lahiriAyanamsa(date)
-  );
-}
-
-function makePlanet(
-  name: string,
-  longitude: number
-): Planet {
-  const normalized =
-    normalize(longitude);
-
-  const nakshatra =
-    nakshatraFromLongitude(
-      normalized
-    );
+  const asc=ascendant(utc,input.lat,input.lon);
+  const moonInfo=nakInfo(moon);
+  const p=panchanga(sun,moon);
+  const ds=dashaInfo(moon);
 
   return {
-    name,
-    longitude: normalized,
-    rasi:
-      rasiFromLongitude(
-        normalized
-      ),
-    nakshatra:
-      nakshatra.name,
-    pada:
-      nakshatra.pada,
+    planets,
+    lagna:asc.sign,
+    lagnaDegree:asc.degree,
+    rasi:signOf(moon),
+    moonNak:moonInfo.n,
+    moonPada:moonInfo.pada,
+    tithi:p.tithi,
+    yoga:p.yoga,
+    karana:p.karana,
+    dasha:ds.dasha,
+    dashaBalance:ds.dashaBalance,
+    navamsa:navamsaSign(asc.sid)
   };
 }
 
-/*
- * Astronomy Engine GeoVector:
- *
- * GeoVector(body, date, aberration)
- *
- * The third argument is boolean.
- */
-function planetLongitude(
-  body: Astronomy.Body,
-  date: Date
-): number {
-  const vector =
-    Astronomy.GeoVector(
-      body,
-      date,
-      true
-    );
-
-  const ecliptic =
-    Astronomy.Ecliptic(
-      vector
-    );
-
-  return ecliptic.elon;
+export function formatDegree(v:number){
+  const d=Math.floor(v), m=Math.floor((v-d)*60), s=Math.round((((v-d)*60)-m)*60);
+  return `${String(d).padStart(2,"0")}:${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
 }
 
-function moonLongitude(
-  date: Date
-): number {
-  const vector =
-    Astronomy.GeoVector(
-      Astronomy.Body.Moon,
-      date,
-      true
-    );
-
-  const ecliptic =
-    Astronomy.Ecliptic(
-      vector
-    );
-
-  return ecliptic.elon;
-}
-
-function sunLongitude(
-  date: Date
-): number {
-  const vector =
-    Astronomy.GeoVector(
-      Astronomy.Body.Sun,
-      date,
-      true
-    );
-
-  const ecliptic =
-    Astronomy.Ecliptic(
-      vector
-    );
-
-  return ecliptic.elon;
-}
-
-function rahuLongitude(
-  date: Date
-): number {
-  const jd =
-    date.getTime() /
-      86400000 +
-    2440587.5;
-
-  const T =
-    (jd - 2451545.0) /
-    36525;
-
-  const longitude =
-    125.04452 -
-    1934.136261 * T +
-    0.0020708 * T * T +
-    (T * T * T) /
-      450000;
-
-  return normalize(longitude);
-}
-
-function getJulianDay(
-  date: Date
-): number {
-  return (
-    date.getTime() /
-      86400000 +
-    2440587.5
-  );
-}
-
-function greenwichSiderealTime(
-  date: Date
-): number {
-  const jd =
-    getJulianDay(date);
-
-  const T =
-    (jd - 2451545.0) /
-    36525;
-
-  const theta =
-    280.46061837 +
-    360.98564736629 *
-      (jd - 2451545.0) +
-    0.000387933 *
-      T *
-      T -
-    (T * T * T) /
-      38710000;
-
-  return normalize(theta);
-}
-
-function calculateLagna(
-  date: Date,
-  latitude: number,
-  longitude: number
-): number {
-  const gst =
-    greenwichSiderealTime(
-      date
-    );
-
-  const localSiderealTime =
-    normalize(
-      gst + longitude
-    );
-
-  const T =
-    (getJulianDay(date) -
-      2451545.0) /
-    36525;
-
-  const obliquity =
-    23.439291 -
-    0.0130042 * T;
-
-  const epsilon =
-    (obliquity * Math.PI) /
-    180;
-
-  const theta =
-    (localSiderealTime *
-      Math.PI) /
-    180;
-
-  const phi =
-    (latitude * Math.PI) /
-    180;
-
-  const y =
-    -Math.cos(theta);
-
-  const x =
-    Math.sin(theta) *
-      Math.cos(epsilon) +
-    Math.tan(phi) *
-      Math.sin(epsilon);
-
-  const asc =
-    (Math.atan2(y, x) *
-      180) /
-    Math.PI;
-
-  return normalize(asc);
-}
-
-export function calculateBirthChart(
-  date: Date,
-  latitude: number,
-  longitude: number
-): BirthChart {
-  const sun =
-    siderealLongitude(
-      sunLongitude(date),
-      date
-    );
-
-  const moon =
-    siderealLongitude(
-      moonLongitude(date),
-      date
-    );
-
-  const mercury =
-    siderealLongitude(
-      planetLongitude(
-        Astronomy.Body.Mercury,
-        date
-      ),
-      date
-    );
-
-  const venus =
-    siderealLongitude(
-      planetLongitude(
-        Astronomy.Body.Venus,
-        date
-      ),
-      date
-    );
-
-  const mars =
-    siderealLongitude(
-      planetLongitude(
-        Astronomy.Body.Mars,
-        date
-      ),
-      date
-    );
-
-  const jupiter =
-    siderealLongitude(
-      planetLongitude(
-        Astronomy.Body.Jupiter,
-        date
-      ),
-      date
-    );
-
-  const saturn =
-    siderealLongitude(
-      planetLongitude(
-        Astronomy.Body.Saturn,
-        date
-      ),
-      date
-    );
-
-  const rahu =
-    siderealLongitude(
-      rahuLongitude(date),
-      date
-    );
-
-  const ketu =
-    normalize(
-      rahu + 180
-    );
-
-  const tropicalLagna =
-    calculateLagna(
-      date,
-      latitude,
-      longitude
-    );
-
-  const lagna =
-    siderealLongitude(
-      tropicalLagna,
-      date
-    );
-
-  return {
-    planets: [
-      makePlanet(
-        "சூரியன்",
-        sun
-      ),
-
-      makePlanet(
-        "சந்திரன்",
-        moon
-      ),
-
-      makePlanet(
-        "செவ்வாய்",
-        mars
-      ),
-
-      makePlanet(
-        "புதன்",
-        mercury
-      ),
-
-      makePlanet(
-        "குரு",
-        jupiter
-      ),
-
-      makePlanet(
-        "சுக்கிரன்",
-        venus
-      ),
-
-      makePlanet(
-        "சனி",
-        saturn
-      ),
-    ],
-
-    lagna:
-      makePlanet(
-        "லக்னம்",
-        lagna
-      ),
-
-    rahu:
-      makePlanet(
-        "ராகு",
-        rahu
-      ),
-
-    ketu:
-      makePlanet(
-        "கேது",
-        ketu
-      ),
-  };
-}
-
-export function getPlanetByName(
-  chart: BirthChart,
-  name: string
-): Planet | undefined {
-  if (name === "லக்னம்") {
-    return chart.lagna;
-  }
-
-  if (name === "ராகு") {
-    return chart.rahu;
-  }
-
-  if (name === "கேது") {
-    return chart.ketu;
-  }
-
-  return chart.planets.find(
-    (planet) =>
-      planet.name === name
-  );
-}
+export function navamsaOfPlanet(p:Planet){return navamsaSign(p.lon);}

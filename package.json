@@ -5,19 +5,18 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "start": "next start"
   },
   "dependencies": {
+    "astronomy-engine": "2.1.19",
     "next": "16.2.11",
     "react": "19.2.0",
-    "react-dom": "19.2.0",
-    "astronomy-engine": "2.1.19"
+    "react-dom": "19.2.0"
   },
   "devDependencies": {
-    "@types/node": "^22.15.0",
-    "@types/react": "^19.1.0",
-    "@types/react-dom": "^19.1.0",
-    "typescript": "^5.8.0"
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "typescript": "^5.0.0"
   }
 }
