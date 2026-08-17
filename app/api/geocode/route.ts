@@ -1,29 +1,105 @@
 import { NextResponse } from "next/server";
 
-export async function GET(req: Request) {
-  const q = new URL(req.url).searchParams.get("q")?.trim();
-  if (!q) return NextResponse.json({ error: "Missing place" }, { status: 400 });
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type",
+};
 
-  const url =
-    "https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&accept-language=en&q=" +
-    encodeURIComponent(q);
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 204,
+    headers: corsHeaders,
+  });
+}
 
+export async function GET(request: Request) {
   try {
-    const r = await fetch(url, {
-      headers: { "User-Agent": "KingsTamilAstro/1.0 contact=website" },
-      next: { revalidate: 86400 },
-    });
-    if (!r.ok) throw new Error("Geocoding failed");
-    const data = await r.json();
-    if (!Array.isArray(data) || !data.length) {
-      return NextResponse.json({ error: "Place not found" }, { status: 404 });
+    const { searchParams } = new URL(request.url);
+    const q = searchParams.get("q")?.trim();
+
+    if (!q) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Place is required",
+        },
+        {
+          status: 400,
+          headers: corsHeaders,
+        }
+      );
     }
-    return NextResponse.json({
-      lat: Number(data[0].lat),
-      lon: Number(data[0].lon),
-      display: data[0].display_name,
+
+    const url =
+      "https://nominatim.openstreetmap.org/search" +
+      `?q=${encodeURIComponent(q + ", Tamil Nadu, India")}` +
+      "&format=json" +
+      "&limit=1" +
+      "&addressdetails=1";
+
+    const response = await fetch(url, {
+      headers: {
+        "User-Agent": "Kings-Tamil-Astro/1.0",
+        Accept: "application/json",
+      },
+      cache: "no-store",
     });
-  } catch {
-    return NextResponse.json({ error: "Could not find place coordinates" }, { status: 502 });
+
+    if (!response.ok) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Geocoding service failed",
+        },
+        {
+          status: 502,
+          headers: corsHeaders,
+        }
+      );
+    }
+
+    const results = await response.json();
+
+    if (!Array.isArray(results) || results.length === 0) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Place not found",
+        },
+        {
+          status: 404,
+          headers: corsHeaders,
+        }
+      );
+    }
+
+    const result = results[0];
+
+    return NextResponse.json(
+      {
+        success: true,
+        lat: Number(result.lat),
+        lon: Number(result.lon),
+        displayName: result.display_name || q,
+      },
+      {
+        status: 200,
+        headers: corsHeaders,
+      }
+    );
+  } catch (error) {
+    console.error("Geocode error:", error);
+
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Unable to find location",
+      },
+      {
+        status: 500,
+        headers: corsHeaders,
+      }
+    );
   }
 }
