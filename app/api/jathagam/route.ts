@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
+import { calculateChart } from "../../../lib/astro";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "GET, OPTIONS",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type",
 };
 
@@ -13,16 +14,26 @@ export async function OPTIONS() {
   });
 }
 
-export async function GET(request: Request) {
+export async function POST(request: Request) {
   try {
-    const { searchParams } = new URL(request.url);
-    const q = searchParams.get("q")?.trim();
+    const body = await request.json();
 
-    if (!q) {
+    const date = body?.date;
+    const time = body?.time;
+
+    const latitude = Number(body?.latitude);
+    const longitude = Number(body?.longitude);
+
+    if (
+      typeof date !== "string" ||
+      typeof time !== "string" ||
+      !Number.isFinite(latitude) ||
+      !Number.isFinite(longitude)
+    ) {
       return NextResponse.json(
         {
           success: false,
-          error: "Place is required",
+          error: "Invalid input",
         },
         {
           status: 400,
@@ -31,57 +42,17 @@ export async function GET(request: Request) {
       );
     }
 
-    const url =
-      "https://nominatim.openstreetmap.org/search" +
-      `?q=${encodeURIComponent(q + ", Tamil Nadu, India")}` +
-      "&format=json" +
-      "&limit=1" +
-      "&addressdetails=1";
-
-    const response = await fetch(url, {
-      headers: {
-        "User-Agent": "Kings-Tamil-Astro/1.0",
-        Accept: "application/json",
-      },
-      cache: "no-store",
+    const data = calculateChart({
+      date,
+      time,
+      lat: latitude,
+      lon: longitude,
     });
-
-    if (!response.ok) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Geocoding service failed",
-        },
-        {
-          status: 502,
-          headers: corsHeaders,
-        }
-      );
-    }
-
-    const results = await response.json();
-
-    if (!Array.isArray(results) || results.length === 0) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Place not found",
-        },
-        {
-          status: 404,
-          headers: corsHeaders,
-        }
-      );
-    }
-
-    const result = results[0];
 
     return NextResponse.json(
       {
         success: true,
-        lat: Number(result.lat),
-        lon: Number(result.lon),
-        displayName: result.display_name || q,
+        data,
       },
       {
         status: 200,
@@ -89,12 +60,12 @@ export async function GET(request: Request) {
       }
     );
   } catch (error) {
-    console.error("Geocode error:", error);
+    console.error("Jathagam API error:", error);
 
     return NextResponse.json(
       {
         success: false,
-        error: "Unable to find location",
+        error: "Jathagam calculation failed",
       },
       {
         status: 500,
