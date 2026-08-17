@@ -33,15 +33,12 @@ export async function GET(request: Request) {
 
     const url =
       "https://nominatim.openstreetmap.org/search" +
-      `?q=${encodeURIComponent(q + ", Tamil Nadu, India")}` +
-      "&format=json" +
-      "&limit=1" +
-      "&addressdetails=1";
+      `?format=json&limit=1&addressdetails=1&q=${encodeURIComponent(q)}`;
 
     const response = await fetch(url, {
       headers: {
-        "User-Agent": "Kings-Tamil-Astro/1.0",
         Accept: "application/json",
+        "User-Agent": "Kings-Tamil-Astro/1.0",
       },
       cache: "no-store",
     });
@@ -74,14 +71,30 @@ export async function GET(request: Request) {
       );
     }
 
-    const result = results[0];
+    const first = results[0];
+
+    const lat = Number(first.lat);
+    const lon = Number(first.lon);
+
+    if (!Number.isFinite(lat) || !Number.isFinite(lon)) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Invalid coordinates",
+        },
+        {
+          status: 500,
+          headers: corsHeaders,
+        }
+      );
+    }
 
     return NextResponse.json(
       {
         success: true,
-        lat: Number(result.lat),
-        lon: Number(result.lon),
-        displayName: result.display_name || q,
+        lat,
+        lon,
+        displayName: first.display_name ?? q,
       },
       {
         status: 200,
@@ -89,12 +102,12 @@ export async function GET(request: Request) {
       }
     );
   } catch (error) {
-    console.error("Geocode error:", error);
+    console.error("Geocode API error:", error);
 
     return NextResponse.json(
       {
         success: false,
-        error: "Unable to find location",
+        error: "Geocoding failed",
       },
       {
         status: 500,
