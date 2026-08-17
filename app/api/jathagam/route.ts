@@ -37,7 +37,7 @@ export async function POST(request: Request) {
       data,
     });
   } catch (error) {
-    console.error(error);
+    console.error("Jathagam API error:", error);
 
     return NextResponse.json(
       {
