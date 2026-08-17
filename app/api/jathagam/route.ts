@@ -5,78 +5,44 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
 
-    const {
-      date,
-      time,
-      latitude,
-      longitude,
-    } = body;
+    const date = body?.date;
+    const time = body?.time;
+    const latitude = Number(body?.latitude);
+    const longitude = Number(body?.longitude);
 
     if (
       typeof date !== "string" ||
       typeof time !== "string" ||
-      latitude === undefined ||
-      longitude === undefined
+      !Number.isFinite(latitude) ||
+      !Number.isFinite(longitude)
     ) {
       return NextResponse.json(
         {
           success: false,
-          error:
-            "date, time, latitude and longitude are required",
+          error: "Invalid input",
         },
         { status: 400 }
       );
     }
 
-    const lat = Number(latitude);
-    const lon = Number(longitude);
-
-    if (
-      !Number.isFinite(lat) ||
-      !Number.isFinite(lon)
-    ) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Invalid latitude or longitude",
-        },
-        { status: 400 }
-      );
-    }
-
-    if (
-      lat < -90 ||
-      lat > 90 ||
-      lon < -180 ||
-      lon > 180
-    ) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Latitude or longitude is out of range",
-        },
-        { status: 400 }
-      );
-    }
-
-    const chart = calculateChart({
+    const data = calculateChart({
       date,
       time,
-      lat,
-      lon,
+      lat: latitude,
+      lon: longitude,
     });
 
     return NextResponse.json({
       success: true,
-      data: chart,
+      data,
     });
   } catch (error) {
-    console.error("Jathagam API error:", error);
+    console.error(error);
 
     return NextResponse.json(
       {
         success: false,
-        error: "Unable to calculate jathagam",
+        error: "Jathagam calculation failed",
       },
       { status: 500 }
     );
