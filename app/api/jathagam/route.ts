@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { calculateBirthChart } from "../../../lib/astro";
+import { calculateChart } from "../../../lib/astro";
 
 export async function POST(request: Request) {
   try {
@@ -13,33 +13,16 @@ export async function POST(request: Request) {
     } = body;
 
     if (
-      !date ||
-      !time ||
+      typeof date !== "string" ||
+      typeof time !== "string" ||
       latitude === undefined ||
       longitude === undefined
     ) {
       return NextResponse.json(
         {
           success: false,
-          error: "date, time, latitude and longitude are required",
-        },
-        { status: 400 }
-      );
-    }
-
-    const birthDate = new Date(
-      `${date}T${time}:00`
-    );
-
-    if (
-      Number.isNaN(
-        birthDate.getTime()
-      )
-    ) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Invalid birth date or time",
+          error:
+            "date, time, latitude and longitude are required",
         },
         { status: 400 }
       );
@@ -50,11 +33,7 @@ export async function POST(request: Request) {
 
     if (
       !Number.isFinite(lat) ||
-      !Number.isFinite(lon) ||
-      lat < -90 ||
-      lat > 90 ||
-      lon < -180 ||
-      lon > 180
+      !Number.isFinite(lon)
     ) {
       return NextResponse.json(
         {
@@ -65,28 +44,39 @@ export async function POST(request: Request) {
       );
     }
 
-    const chart =
-      calculateBirthChart(
-        birthDate,
-        lat,
-        lon
+    if (
+      lat < -90 ||
+      lat > 90 ||
+      lon < -180 ||
+      lon > 180
+    ) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Latitude or longitude is out of range",
+        },
+        { status: 400 }
       );
+    }
+
+    const chart = calculateChart({
+      date,
+      time,
+      lat,
+      lon,
+    });
 
     return NextResponse.json({
       success: true,
       data: chart,
     });
   } catch (error) {
-    console.error(
-      "Jathagam API error:",
-      error
-    );
+    console.error("Jathagam API error:", error);
 
     return NextResponse.json(
       {
         success: false,
-        error:
-          "Unable to calculate jathagam",
+        error: "Unable to calculate jathagam",
       },
       { status: 500 }
     );
