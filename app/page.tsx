@@ -1,4 +1,3 @@
-```tsx
 "use client";
 
 import { useState } from "react";
@@ -157,6 +156,7 @@ export default function Home() {
        * Birth Place மட்டும் கொடுத்தால் /api/geocode
        * automatic-ஆ coordinates கண்டுபிடிக்கும்.
        */
+
       const geoResponse = await fetch(
         `/api/geocode?q=${encodeURIComponent(f.place)}`
       );
@@ -272,7 +272,10 @@ export default function Home() {
       <html lang="ta">
         <head>
           <meta charset="utf-8">
-          <meta name="viewport" content="width=device-width,initial-scale=1">
+          <meta
+            name="viewport"
+            content="width=device-width,initial-scale=1"
+          >
           <title>${f.name || "Jathagam"}</title>
           <style>${styles}</style>
         </head>
@@ -299,6 +302,7 @@ export default function Home() {
 
   return (
     <main className="page">
+
       {/* ================= FORM ================= */}
 
       <section className="formCard no-print">
@@ -438,6 +442,7 @@ export default function Home() {
 
       {data && (
         <section className="paper" id="report">
+
           <header className="reportHead">
             <DeityImage
               src={MURUGAN_IMAGE}
@@ -474,6 +479,7 @@ export default function Home() {
           </div>
 
           <section className="detailsPanel">
+
             <div className="detailsCol">
               <h2>{f.name}</h2>
 
@@ -569,6 +575,7 @@ export default function Home() {
                 </div>
               </div>
             </div>
+
           </section>
 
           <div className="noteLine">
@@ -737,9 +744,9 @@ export default function Home() {
               ← புதிய ஜாதகம்
             </button>
           </div>
+
         </section>
       )}
     </main>
   );
 }
-```
