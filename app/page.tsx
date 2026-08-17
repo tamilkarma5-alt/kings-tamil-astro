@@ -1,7 +1,7 @@
  "use client";
 
 import { useState } from "react";
-import { calculateChart, formatDegree, navamsaOfPlanet, nakshatras, nakshatraLetter, shortSigns, signs, type ChartData, type Planet } from "../lib/astro";
+import { calculateChart, formatDegree, navamsaOfPlanet, nakshatras, nakshatraLetter, nakshatraLettersText, shortSigns, signs, type ChartData, type Planet } from "../lib/astro";
 
 type Form={
   name:string; father:string; mother:string; date:string; time:string; place:string; gender:string;
@@ -49,20 +49,47 @@ export default function Home(){
  });
  const [data,setData]=useState<ChartData|null>(null);
  const [status,setStatus]=useState("");
+ const [busy,setBusy]=useState(false);
  const set=(k:keyof Form,v:string)=>setF(x=>({...x,[k]:v}));
 
  async function generate(){
    if(!f.name||!f.date||!f.time||!f.place){alert("பெயர், தேதி, நேரம், பிறந்த இடம் ஆகியவை கட்டாயம்.");return}
+   setBusy(true)
    setStatus("பிறந்த இடத்தை கண்டறிகிறது...");
    let lat=Number(f.lat),lon=Number(f.lon);
    if(!Number.isFinite(lat)||!Number.isFinite(lon)){
      const r=await fetch(`/api/geocode?q=${encodeURIComponent(f.place)}`);
      const j=await r.json();
-     if(!r.ok){setStatus("இடத்தை கண்டறிய முடியவில்லை. Optional coordinates-ஐ கொடுக்கலாம்.");return}
+     if(!r.ok){setStatus("இடத்தை கண்டறிய முடியவில்லை. Optional coordinates-ஐ கொடுக்கலாம்.");setBusy(false);return}
      lat=j.lat;lon=j.lon;
    }
    try{setData(calculateChart({date:f.date,time:f.time,lat,lon}));setStatus("")}
    catch{setStatus("கணக்கீட்டில் பிழை. தேதி/நேரத்தை சரிபார்க்கவும்.")}
+   finally{setBusy(false)}
+ }
+
+ async function downloadPdf(){
+   const el=document.getElementById("report");
+   if(!el)return;
+   setBusy(true);
+   try{
+     const [{default:html2canvas},{jsPDF}]=await Promise.all([import("html2canvas"),import("jspdf")]);
+     const canvas=await html2canvas(el,{scale:2,useCORS:true,backgroundColor:"#ffffff",logging:false});
+     const pdf=new jsPDF({orientation:"portrait",unit:"mm",format:"a4"});
+     const img=canvas.toDataURL("image/jpeg",0.94);
+     pdf.addImage(img,"JPEG",0,0,210,297);
+     pdf.save(`${f.name || "jathagam"}.pdf`);
+   }catch{alert("PDF உருவாக்க முடியவில்லை. Print / Save as PDF பயன்படுத்தலாம்.")}
+   finally{setBusy(false)}
+ }
+
+ function openReport(){
+   const el=document.getElementById("report");
+   if(!el)return;
+   const win=window.open("","_blank");
+   if(!win){alert("Browser popup block செய்துள்ளது. Open permission கொடுக்கவும்.");return}
+   win.document.write(`<!doctype html><html lang="ta"><head><meta charset="utf-8"><title>${f.name || "Jathagam"}</title><style>${Array.from(document.styleSheets).map(s=>{try{return Array.from((s as CSSStyleSheet).cssRules).map(r=>r.cssText).join("\n")}catch{return ""}}).join("\n")}</style></head><body>${el.outerHTML}</body></html>`);
+   win.document.close();
  }
 
  const now=new Date().toLocaleString("ta-IN",{dateStyle:"medium",timeStyle:"short"});
@@ -91,7 +118,7 @@ export default function Home(){
     <label>Shop Place<input value={f.shopPlace} onChange={e=>set("shopPlace",e.target.value)} placeholder="கடை அமைந்துள்ள இடம்"/></label>
     <label>Shop Contact<input value={f.shopContact} onChange={e=>set("shopContact",e.target.value)} placeholder="தொலைபேசி / WhatsApp"/></label>
    </div></details>
-   <button onClick={generate}>ஜாதகம் உருவாக்கு</button>{status&&<p className="status">{status}</p>}
+   <button disabled={busy} onClick={generate}>{busy?"தயாராகிறது…":"ஜாதகம் உருவாக்கு"}</button>{status&&<p className="status">{status}</p>}
   </section>
 
   {data&&<section className="paper" id="report">
@@ -117,7 +144,7 @@ export default function Home(){
          <div><span>லக்னம்</span><b>{signs[data.lagna]}</b></div>
          <div><span>ராசி</span><b>{signs[data.rasi]}</b></div>
          <div><span>நட்சத்திரம்</span><b>{nakshatras[data.moonNak]} {data.moonPada}</b></div>
-         <div><span>நட்சத்திர எழுத்து</span><b>{nakshatraLetter(data.moonNak,data.moonPada)}</b></div>
+         <div><span>நட்சத்திர எழுத்து</span><b>{nakshatraLettersText(data.moonNak)}</b></div>
          <div><span>பட்சம்-திதி</span><b>{data.tithi}</b></div>
          <div><span>யோகம்-கரணம்</span><b>{data.yoga} / {data.karana}</b></div>
          <div><span>தமிழ்ப்பிறைமை</span><b>{f.gender}</b></div>
@@ -138,7 +165,7 @@ export default function Home(){
    </section>
 
    <div className="noteLine">
-     <b>யோகம்</b> {data.yoga} &nbsp;•&nbsp; <b>நட்சத்திரம்</b> {nakshatras[data.moonNak]} {data.moonPada} &nbsp;•&nbsp; <b>நட்சத்திர எழுத்து</b> {nakshatraLetter(data.moonNak,data.moonPada)} &nbsp;•&nbsp; <b>ராசி</b> {signs[data.rasi]}
+     <b>யோகம்</b> {data.yoga} &nbsp;•&nbsp; <b>நட்சத்திரம்</b> {nakshatras[data.moonNak]} {data.moonPada} &nbsp;•&nbsp; <b>நட்சத்திர எழுத்து</b> {nakshatraLettersText(data.moonNak)} &nbsp;•&nbsp; <b>ராசி</b> {signs[data.rasi]}
    </div>
 
    <section className="planetSection">
@@ -177,7 +204,9 @@ export default function Home(){
    </footer>
 
    <div className="no-print actions">
-     <button onClick={()=>window.print()}>🖨️ Print / Save as PDF</button>
+     <button disabled={busy} onClick={()=>window.print()}>🖨️ Print / Save PDF</button>
+     <button disabled={busy} onClick={downloadPdf}>⬇️ Download PDF</button>
+     <button disabled={busy} onClick={openReport}>↗ Open</button>
      <button onClick={()=>window.scrollTo({top:0,behavior:"smooth"})}>← புதிய ஜாதகம்</button>
    </div>
   </section>}

@@ -78,6 +78,11 @@ export function nakshatraLetter(nakIndex:number, pada:number): string {
   return row[Math.max(0, Math.min(3, pada - 1))] ?? "—";
 }
 
+export function nakshatraLettersText(nakIndex:number): string {
+  const row = nakshatraLetters[nakIndex] ?? [];
+  return row.join(" • ") || "—";
+}
+
 
 const dashaLords = ["கேது","சுக்கிரன்","சூரியன்","சந்திரன்","செவ்வாய்","ராகு","குரு","சனி","புதன்"];
 const dashaYears: Record<string,number> = {
