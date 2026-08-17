@@ -199,7 +199,7 @@ export default function Home(){
    </section>}
 
    <footer className="reportFooter">
-     <span><strong>Kings Tamil Astro</strong> • Software by Kings Technology</span>
+     <span><strong>Kings Tamil Astro</strong> • Software by Kings Technology www.kingstechnology.in </span>
      <span>Printed on {now}</span>
    </footer>
 
