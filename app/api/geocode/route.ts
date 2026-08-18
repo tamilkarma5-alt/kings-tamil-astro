@@ -16,8 +16,8 @@ export async function OPTIONS() {
 
 export async function GET(request: Request) {
   try {
-    const { searchParams } = new URL(request.url);
-    const place = searchParams.get("q");
+    const requestUrl = new URL(request.url);
+    const place = requestUrl.searchParams.get("q");
 
     if (!place) {
       return NextResponse.json(
@@ -32,11 +32,18 @@ export async function GET(request: Request) {
       );
     }
 
+    const encodedPlace = encodeURIComponent(place);
+
     const url =
       "https://nominatim.openstreetmap.org/search" +
-      `?format=json&limit=1&addressdetails=1&q=${encodeURIComponent(place)}`;
+      "?format=json" +
+      "&limit=1" +
+      "&addressdetails=1" +
+      "&q=" +
+      encodedPlace;
 
     const response = await fetch(url, {
+      method: "GET",
       headers: {
         "User-Agent": "Kings-Tamil-Astro/1.0",
         Accept: "application/json",
@@ -74,11 +81,27 @@ export async function GET(request: Request) {
 
     const first = results[0];
 
+    const lat = Number(first.lat);
+    const lon = Number(first.lon);
+
+    if (!Number.isFinite(lat) || !Number.isFinite(lon)) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Invalid coordinates returned",
+        },
+        {
+          status: 502,
+          headers: corsHeaders,
+        }
+      );
+    }
+
     return NextResponse.json(
       {
         success: true,
-        lat: Number(first.lat),
-        lon: Number(first.lon),
+        lat: lat,
+        lon: lon,
         displayName: first.display_name || place,
       },
       {
