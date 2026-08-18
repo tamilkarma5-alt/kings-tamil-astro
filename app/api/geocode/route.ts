@@ -1,9 +1,10 @@
+```tsx
 import { NextResponse } from "next/server";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
 };
 
 export async function OPTIONS() {
@@ -16,9 +17,9 @@ export async function OPTIONS() {
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const q = searchParams.get("q")?.trim();
+    const place = searchParams.get("q");
 
-    if (!q) {
+    if (!place) {
       return NextResponse.json(
         {
           success: false,
@@ -33,12 +34,12 @@ export async function GET(request: Request) {
 
     const url =
       "https://nominatim.openstreetmap.org/search" +
-      `?format=json&limit=1&addressdetails=1&q=${encodeURIComponent(q)}`;
+      `?format=json&limit=1&addressdetails=1&q=${encodeURIComponent(place)}`;
 
     const response = await fetch(url, {
       headers: {
-        Accept: "application/json",
         "User-Agent": "Kings-Tamil-Astro/1.0",
+        Accept: "application/json",
       },
       cache: "no-store",
     });
@@ -73,28 +74,12 @@ export async function GET(request: Request) {
 
     const first = results[0];
 
-    const lat = Number(first.lat);
-    const lon = Number(first.lon);
-
-    if (!Number.isFinite(lat) || !Number.isFinite(lon)) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Invalid coordinates",
-        },
-        {
-          status: 500,
-          headers: corsHeaders,
-        }
-      );
-    }
-
     return NextResponse.json(
       {
         success: true,
-        lat,
-        lon,
-        displayName: first.display_name ?? q,
+        lat: Number(first.lat),
+        lon: Number(first.lon),
+        displayName: first.display_name || place,
       },
       {
         status: 200,
@@ -102,7 +87,7 @@ export async function GET(request: Request) {
       }
     );
   } catch (error) {
-    console.error("Geocode API error:", error);
+    console.error("Geocode error:", error);
 
     return NextResponse.json(
       {
@@ -116,3 +101,4 @@ export async function GET(request: Request) {
     );
   }
 }
+```
