@@ -8,9 +8,9 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "Content-Type, Authorization",
 };
 
-function json(data: unknown, status = 200) {
+function makeResponse(data: unknown, status: number) {
   return NextResponse.json(data, {
-    status,
+    status: status,
     headers: corsHeaders,
   });
 }
@@ -37,7 +37,7 @@ export async function POST(request: Request) {
       !Number.isFinite(latitude) ||
       !Number.isFinite(longitude)
     ) {
-      return json(
+      return makeResponse(
         {
           success: false,
           error: "Invalid input",
@@ -47,20 +47,23 @@ export async function POST(request: Request) {
     }
 
     const data = calculateChart({
-      date,
-      time,
+      date: date,
+      time: time,
       lat: latitude,
       lon: longitude,
     });
 
-    return json({
-      success: true,
-      data,
-    });
+    return makeResponse(
+      {
+        success: true,
+        data: data,
+      },
+      200
+    );
   } catch (error) {
     console.error("Jathagam API error:", error);
 
-    return json(
+    return makeResponse(
       {
         success: false,
         error: "Jathagam calculation failed",
