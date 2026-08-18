@@ -1,11 +1,19 @@
+```tsx
 import { NextResponse } from "next/server";
 import { calculateChart } from "../../../lib/astro";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
 };
+
+function json(data: unknown, status = 200) {
+  return NextResponse.json(data, {
+    status,
+    headers: corsHeaders,
+  });
+}
 
 export async function OPTIONS() {
   return new NextResponse(null, {
@@ -20,7 +28,6 @@ export async function POST(request: Request) {
 
     const date = body?.date;
     const time = body?.time;
-
     const latitude = Number(body?.latitude);
     const longitude = Number(body?.longitude);
 
@@ -30,15 +37,12 @@ export async function POST(request: Request) {
       !Number.isFinite(latitude) ||
       !Number.isFinite(longitude)
     ) {
-      return NextResponse.json(
+      return json(
         {
           success: false,
           error: "Invalid input",
         },
-        {
-          status: 400,
-          headers: corsHeaders,
-        }
+        400
       );
     }
 
@@ -49,28 +53,20 @@ export async function POST(request: Request) {
       lon: longitude,
     });
 
-    return NextResponse.json(
-      {
-        success: true,
-        data,
-      },
-      {
-        status: 200,
-        headers: corsHeaders,
-      }
-    );
+    return json({
+      success: true,
+      data,
+    });
   } catch (error) {
     console.error("Jathagam API error:", error);
 
-    return NextResponse.json(
+    return json(
       {
         success: false,
         error: "Jathagam calculation failed",
       },
-      {
-        status: 500,
-        headers: corsHeaders,
-      }
+      500
     );
   }
 }
+```
